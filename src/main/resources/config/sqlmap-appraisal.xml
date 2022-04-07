@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AppraisalDAO">
+<!-- 아래 예시와 다르게 테이블 명 / 컬럼을 대문자로, 쿼리문장을 소문자로 작성하기 -->
+
+	<select id="findAllBook" resultType="bookInfo">
+		SELECT * FROM bookinfo ORDER BY isbn
+	</select>
+	
+	<select id="bookDetail" parameterType="String" resultType="bookInfo">
+		SELECT * FROM bookinfo WHERE isbn=#{isbn, jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="writeComment" parameterType="appraisal">
+		INSERT INTO appraisal (appraisal_num, star, book_comment, start_date, end_date, co_prv, mem_num, isbn)
+		VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv}, #{mem_num}, #{isbn})
+		<selectKey keyProperty="mem_num" resultType="Long">
+			SELECT NVL(MAX(mem_num), 0) FROM member
+		</selectKey>
+	</insert>
+
+	
+	
+	
+	<select id="memberInfo" parameterType="Long" resultType="member">
+		SELECT * FROM member WHERE mem_num=#{mem_num}
+	</select>
+	
+	
+
+<!-- 	<select id="search" parameterType="HashMap" resultType="book"> -->
+<!-- 		<if test="option  == 'bookname'"> -->
+<!-- 			SELECT * FROM book WHERE bookname LIKE '%'||#{keyword}||'%' -->
+<!-- 		</if> -->
+<!-- 		<if test="option  == 'author'"> -->
+<!-- 			SELECT * FROM book WHERE author LIKE '%'||#{keyword}||'%' -->
+<!-- 		</if> -->
+<!-- 		<if test="option  == 'pubcompany'"> -->
+<!-- 			SELECT * FROM book WHERE pubcompany LIKE '%'||#{keyword}||'%' -->
+<!-- 		</if> -->
+<!-- 	</select> -->
+
+<!-- 	<select id="findByIsbn" parameterType="String" resultType="book"> -->
+<!-- 		SELECT * FROM book WHERE isbn=#{isbn} -->
+<!-- 	</select> -->
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
