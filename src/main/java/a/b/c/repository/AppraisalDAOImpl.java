@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import a.b.c.HomeController;
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookInfoVO;
+import a.b.c.model.allCommentByBookCmd;
 
 @Repository
 public class AppraisalDAOImpl implements AppraisalDAO {
@@ -46,9 +47,13 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 
 	//해당 도서의 대한 모든 평가 불러오기
 	@Override
-	public List<AppraisalVO> findAllComment(String isbn) {
-		System.out.println(isbn);
+	public List<allCommentByBookCmd> findAllComment(String isbn) {
 		return sqlSessionTemplate.selectList("findAllComment", isbn);
 	}
 
+	//해당 도서의 대한 평가 갯수
+	@Override
+	public int commentCount(String isbn) {
+		return sqlSessionTemplate.selectOne("commentCount", isbn);
+	}
 }

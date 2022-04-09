@@ -69,8 +69,7 @@
 		<constructor-arg ref="sqlSessionTemplate"></constructor-arg>
 	</bean>
 
-	<bean id="appraisalService"
-		class="a.b.c.service.AppraisalServiceImpl">
+	<bean id="appraisalService" class="a.b.c.service.AppraisalServiceImpl">
 		<property name="appraisalDAO" ref="appraisalDAO"></property>
 	</bean>
 

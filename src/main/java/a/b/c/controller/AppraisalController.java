@@ -1,6 +1,6 @@
 package a.b.c.controller;
 
-import java.util.HashMap;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -17,6 +18,7 @@ import a.b.c.HomeController;
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookInfoVO;
 import a.b.c.model.MemberVO;
+import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 
 @Controller
@@ -51,56 +53,71 @@ public class AppraisalController {
 		return "bookInfoList";
 	}
 
-	// 도서상세보기 및 평가(코멘트)작성
-	@RequestMapping(value = "/read/{isbn}")
-	public String detailAndwriteComment(@PathVariable("isbn") String isbn, AppraisalVO appraisals, Model model) {
-		Long mem_num = (long) 1; // 테스트용 회원번호 삽입
-
-		// 도서 상세보기
+	// 도서 상세보기 및 평가작성(form)  
+	@GetMapping(value = "/read/{isbn}")
+	public String bookDetail(@PathVariable("isbn") String isbn, Model model) {
+		
+		//도서 상세보기
 		BookInfoVO book = appraisalService.bookDetail(isbn);
 		if (book == null) {
 			return "bookInfoList";
 		}
 		model.addAttribute("book", book);
-
 		
-		// 해당 도서의 대한 모든 평가 불러오기
-		List<AppraisalVO> comments = appraisalService.findAllComment(isbn);
-		model.addAttribute("comments", comments);
+		//해당 도서의 대한 평가 갯수
+		int commentCount = appraisalService.commentCount(isbn);
+//		logger.debug("count : " + commentCount);
+		model.addAttribute("commentCount", commentCount);
 		
-		for(AppraisalVO test : comments) {
-			logger.debug("isbn:" + test.getIsbn());
-		}
+		//해당 도서의 대한 모든 평가 불러오기
+		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
 		
-		// 평가 작성
-		AppraisalVO appraisal = new AppraisalVO();
-		MemberVO member = new MemberVO();
-		member.setMem_num(mem_num);
-
-		appraisal.setStar(appraisals.getStar());
-//		System.out.println(appraisal.getStar());		
-		appraisal.setBook_comment(appraisals.getBook_comment());
-//		System.out.println(appraisal.getBook_comment());		
-		appraisal.setStart_date(appraisals.getStart_date());
-//		System.out.println(appraisal.getStart_date());		
-		appraisal.setEnd_date(appraisals.getEnd_date());
-//		System.out.println(appraisal.getEnd_date());		
-		appraisal.setCo_prv(appraisals.getCo_prv());
-//		System.out.println(appraisal.getCo_prv());
-		appraisal.setMem_num(member.getMem_num());
-//		System.out.println(member.getMem_num());
-		appraisal.setIsbn(isbn);
-//		System.out.println(appraisal.getIsbn());
-		appraisalService.writeComment(appraisal);
-
+//		for (allCommentByBookCmd test : commentsByMembers) {
+//			logger.debug("mem_id:" + test.getMem_id());
+//			logger.debug("mem_pic:" + test.getMem_pic());
+//			logger.debug("star:" + Integer.toString(test.getStar()));
+//			logger.debug("book_comment:" + test.getBook_comment());
+//			logger.debug("start_date:" + test.getStart_date());
+//			logger.debug("end_date:" + test.getEnd_date());
+//		}
+//		
+		model.addAttribute("commentsByMembers", commentsByMembers);
 		return "detailAndComment";
 	}
+	
+	//평가 작성(insert)
+	@PostMapping(value = "/read/{isbn}")
+	public String writeComment(@PathVariable("isbn") String isbn, AppraisalVO appraisal, Model model) {		
 
-	// 해당 도서에 작성된 모든 평가 불러오기
+		AppraisalVO comment = new AppraisalVO();
+		MemberVO member = new MemberVO();
+		Long mem_num = (long) 6;	//테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		member.setMem_num(mem_num);
+
+		comment.setStar(appraisal.getStar());
+//		System.out.println(appraisal.getStar());		
+		comment.setBook_comment(appraisal.getBook_comment());
+//		System.out.println(appraisal.getBook_comment());		
+		comment.setStart_date(appraisal.getStart_date());
+//		System.out.println(appraisal.getStart_date());		
+		comment.setEnd_date(appraisal.getEnd_date());
+//		System.out.println(appraisal.getEnd_date());		
+		comment.setCo_prv(appraisal.getCo_prv());
+//		System.out.println(appraisal.getCo_prv());
+		comment.setMem_num(member.getMem_num());
+//		System.out.println(member.getMem_num());
+		comment.setIsbn(isbn);
+//		System.out.println(appraisal.getIsbn());
+		appraisalService.writeComment(comment);
+		
+		return "redirect:/AppraisalPage/read/{isbn}";
+	}
+
+//	// 해당 도서의 대한 평가 갯수
 //	@RequestMapping(value = "/read/{isbn}")
-//	public String findAllComment(String isbn, Model model) {
-//		List<AppraisalVO> comments = appraisalService.findAllComment(isbn);
-//		model.addAttribute("comments", comments);
+//	public allCommentByBookCmd commentCount(String isbn, Model model) {
+//		allCommentByBookCmd commentCount = appraisalService.commentCount(isbn);
+//		model.addAttribute("commentCount", commentCount);
 //		return "detailAndComment";
 //	}
 

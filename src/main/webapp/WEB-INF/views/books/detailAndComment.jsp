@@ -50,13 +50,11 @@
 				<th>별점</th>
 				<td>
 					<div class="star-rating space-x-4 mx-auto">
-						<input type="radio" id="1-stars" name="star" value="5"
-							v-model="ratings" />1점(지울 예정) <input type="radio" id="2-stars"
-							name="star" value="4" v-model="ratings" />2점(지울 예정) <input
-							type="radio" id="3-stars" name="star" value="3" v-model="ratings" />3점(지울
-						예정) <input type="radio" id="4-stars" name="star" value="2"
-							v-model="ratings" />4점(지울 예정) <input type="radio" id="5-star"
-							name="star" value="1" v-model="ratings" />5점(지울 예정)
+						<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
+						<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정) 
+						<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정) 
+						<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
+						<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
 					</div>
 				</td>
 			</tr>
@@ -84,18 +82,26 @@
 		</table>
 		<input type="submit" value="도서 평가 등록">
 	</form>
-
-
-
-	<c:if test="${!empty comments}">
-		<c:forEach var="comment" items="${comments} }">
-			<table border="1">
-				<tr>
-					<td>${member.mem_id}</td>
-					<td>${member.mem_pic}</td>
-					<td>${comment.book_comment}</td>
-				</tr>
-			</table>
+	
+	<br>
+	
+	<c:if test="${!empty commentCount}">
+		평가 총 개수 : ${commentCount}	
+	</c:if>
+	
+	<br>
+	
+	<c:if test="${!empty commentsByMembers}">
+		<c:forEach var="commentsByMember" items="${commentsByMembers}">
+			<p>
+			평가 번호 : ${commentsByMember.appraisal_num}
+			회원 : ${commentsByMember.mem_id}
+			프로필 : ${commentsByMember.mem_pic}
+			별점 : ${commentsByMember.star}
+			시작날짜 : ${commentsByMember.start_date}
+			다 읽은 날짜 : ${commentsByMember.end_date}
+			평가 : ${commentsByMember.book_comment}
+			</p>
 		</c:forEach>
 	</c:if>
 

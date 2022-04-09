@@ -6,29 +6,42 @@
 	<!-- 아래 예시와 다르게 테이블 명 / 컬럼을 대문자로, 쿼리문장을 소문자로 작성하기 -->
 
 	<select id="findAllBook" resultType="bookInfo">
-		SELECT * FROM bookinfo ORDER
-		BY isbn
+		SELECT * FROM bookinfo ORDER BY isbn
 	</select>
 
-	<select id="bookDetail" parameterType="String"
-		resultType="bookInfo">
+	<select id="bookDetail" parameterType="String" resultType="bookInfo">
 		SELECT * FROM bookinfo WHERE isbn=#{isbn, jdbcType=VARCHAR}
 	</select>
-
+	
 	<insert id="writeComment" parameterType="appraisal">
-		INSERT INTO appraisal
-		(appraisal_num, star, book_comment, start_date, end_date, co_prv,
-		mem_num, isbn)
-		VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment},
-		#{start_date}, #{end_date}, #{co_prv}, #{mem_num}, #{isbn})
+	INSERT INTO appraisal(appraisal_num, star, book_comment, start_date, end_date, co_prv, mem_num, isbn)
+	VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv}, #{mem_num}, #{isbn})
 	</insert>
-
-	<select id="findAllComment" parameterType="String" resultType="appraisal">
-		<!-- SELECT book_comment FROM appraisal WHERE isbn=#{isbn, jdbcType=VARCHAR} -->
-		SELECT book_comment FROM appraisal WHERE isbn=#{isbn}
+	
+	
+	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd">
+	<!-- 	 MEMBER,APPRAISAL 조인   -->
+	SELECT 
+	 appraisal.appraisal_num,
+ 	 appraisal.star,
+ 	 appraisal.book_comment,
+ 	 appraisal.start_date,
+ 	 appraisal.end_date,
+ 	 member.mem_id,
+ 	 member.mem_pic
+	FROM bookinfo
+	INNER JOIN appraisal ON appraisal.isbn = bookinfo.isbn
+	INNER JOIN member ON member.mem_num = appraisal.mem_num
+	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개'
 	</select>
-
-
+	
+	<select id="commentCount" parameterType="String" resultType="Integer">
+	SELECT 
+	COUNT(appraisal.book_comment)
+	FROM appraisal
+	INNER JOIN bookinfo ON bookinfo.isbn = appraisal.isbn
+	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개'
+	</select>
 
 
 	<!-- <select id="search" parameterType="HashMap" resultType="book"> -->
