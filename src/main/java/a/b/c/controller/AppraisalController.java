@@ -1,13 +1,7 @@
 package a.b.c.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +16,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import a.b.c.HomeController;
 import a.b.c.model.AppraisalVO;
-import a.b.c.model.BookJsonVO;
+import a.b.c.model.BookShelfVO;
 import a.b.c.model.MemberVO;
+import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 
 @Controller
@@ -46,19 +41,10 @@ public class AppraisalController {
 	@GetMapping(value = "/read/{isbn}")
 	public String bookDetailAndComment(@RequestParam(required = false)String query, Model model) {
 		System.out.println("bookDetailAndComment");	
+		
 		System.out.println(query);
+		
 		model.addAttribute("query", query);
-
-		return "detailAndComment";
-		
-		
-		
-//		// 도서 상세보기
-//		BookInfoVO book = appraisalService.bookDetail(isbn);
-//		if (book == null) {
-//			return "bookInfoList";
-//		}
-//		model.addAttribute("book", book);
 
 		// 해당 도서의 대한 평가 갯수
 //		int commentCount = appraisalService.commentCount(isbn);
@@ -66,19 +52,21 @@ public class AppraisalController {
 //		model.addAttribute("commentCount", commentCount);
 
 		// 해당 도서의 대한 모든 평가 불러오기
-//		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
+		String isbn = "1162203625";
+		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
 
-//		for (allCommentByBookCmd test : commentsByMembers) {
-//			logger.debug("mem_id:" + test.getMem_id());
-//			logger.debug("mem_pic:" + test.getMem_pic());
-//			logger.debug("star:" + Integer.toString(test.getStar()));
-//			logger.debug("book_comment:" + test.getBook_comment());
-//			logger.debug("start_date:" + test.getStart_date());
-//			logger.debug("end_date:" + test.getEnd_date());
-//		}
-//		
-//		model.addAttribute("commentsByMembers", commentsByMembers);
-		//return "detailAndComment";
+		for (allCommentByBookCmd test : commentsByMembers) {
+			logger.debug("mem_id:" + test.getMem_id());
+			logger.debug("mem_pic:" + test.getMem_pic());
+			logger.debug("star:" + Integer.toString(test.getStar()));
+			logger.debug("book_comment:" + test.getBook_comment());
+			logger.debug("start_date:" + test.getStart_date());
+			logger.debug("end_date:" + test.getEnd_date());
+		}
+		
+		model.addAttribute("commentsByMembers", commentsByMembers);
+		
+		return "detailAndComment";
 	}
 
 	// 평가 작성(insert)

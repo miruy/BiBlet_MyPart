@@ -3,13 +3,6 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="AppraisalDAO">
-<!-- 	<select id="findAllBook" resultType="bookInfo"> -->
-<!-- 		SELECT * FROM bookinfo ORDER BY isbn -->
-<!-- 	</select> -->
-
-<!-- 	<select id="bookDetail" parameterType="String" resultType="bookInfo"> -->
-<!-- 		SELECT * FROM bookinfo WHERE isbn=#{isbn, jdbcType=VARCHAR} -->
-<!-- 	</select> -->
 	
 	<insert id="writeComment" parameterType="appraisal">
 	INSERT INTO appraisal(appraisal_num, star, book_comment, start_date, end_date, co_prv, book_status_num)
@@ -17,21 +10,21 @@
 	</insert>
 	
 	
-<!-- 	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd"> -->
-<!-- 	 MEMBER,APPRAISAL 조인   --> 
-<!-- 	SELECT  -->
-<!-- 	 appraisal.appraisal_num, -->
-<!--  	 appraisal.star, -->
-<!--  	 appraisal.book_comment, -->
-<!--  	 appraisal.start_date, -->
-<!--  	 appraisal.end_date, -->
-<!--  	 member.mem_id, -->
-<!--  	 member.mem_pic -->
-<!-- 	FROM bookinfo -->
-<!-- 	INNER JOIN appraisal ON appraisal.isbn = bookinfo.isbn -->
-<!-- 	INNER JOIN member ON member.mem_num = appraisal.mem_num -->
-<!-- 	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개' -->
-<!-- 	</select> -->
+	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd">
+<!-- 	 MEMBER,APPRAISAL 조인    -->
+	SELECT 
+	 appraisal.appraisal_num,
+ 	 appraisal.star,
+ 	 appraisal.book_comment,
+ 	 appraisal.start_date,
+ 	 appraisal.end_date,
+ 	 member.mem_id,
+ 	 member.mem_pic
+	FROM bookshelf
+	INNER JOIN appraisal ON bookshelf.book_status_num = appraisal.book_status_num
+	INNER JOIN member ON bookshelf.mem_num = member.mem_num
+	WHERE bookshelf.isbn=${isbn} AND appraisal.co_prv='공개'
+	</select>
 	
 <!-- 	<select id="commentCount" parameterType="String" resultType="Integer"> -->
 <!-- 	SELECT  -->

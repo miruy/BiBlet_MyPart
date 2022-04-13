@@ -11,7 +11,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> 
 </head>
 <body>
-	<form method="get" action="/BiBlet/AppraisalPage/list">
 			<p>
 			검색 키워드 입력 : 
 			<select name="option">
@@ -23,7 +22,6 @@
 			<input type="text" name="query" id="query" value="${query}" placeholder="제목, 저자 또는 출판사 검색" size=30> 
 			<button id="search">검색</button>
  			</p>
-	</form>
 	
 	 <div id="bookInfo">
 		 
@@ -66,6 +64,11 @@
 				<td><input type="checkbox" name="co_prv" value="공개" />공개 <input
 					type="checkbox" name="co_prv" value="비공개" />비공개</td>
 			</tr>
+				<tr>
+				<td>
+				<input type="hidden" name="isbn" id="isbn" value="${isbn}" />
+				</td>
+				</tr>
 		</table>
 		<input type="submit" value="도서 평가 등록">
 	</form>
@@ -111,8 +114,7 @@
                         $("#bookInfo").append("<strong>저자:</strong> " + msg.documents[0].authors + "<br>");		//저자	
                         $("#bookInfo").append("<strong>출판사:</strong> " + msg.documents[0].publisher + "<br>");		//출판사
                         $("#bookInfo").append("<strong>줄거리:</strong> " + msg.documents[0].contents + "...<br>");		//줄거리
-                    	$("#bookInfo").append("<strong>일련번호:</strong>" + msg.documents[0].isbn + "<br>");	//일련번호
-                    	
+                        $("#isbn").append(msg.documents[0].isbn);
                 });
            
         })    
