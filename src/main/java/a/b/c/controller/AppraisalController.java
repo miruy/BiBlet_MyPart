@@ -1,24 +1,30 @@
 package a.b.c.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import java.util.List;
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import a.b.c.HomeController;
 import a.b.c.model.AppraisalVO;
-import a.b.c.model.BookInfoVO;
+import a.b.c.model.BookJsonVO;
 import a.b.c.model.MemberVO;
-import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 
 @Controller
@@ -34,7 +40,7 @@ public class AppraisalController {
 	// 모든 도서 정보 불러오기
 	@GetMapping(value = "/list")
 	public String findAllBook(Model model) {
-		List<BookInfoVO> books = appraisalService.findAllBook();
+		
 
 ////		DB에서 불러온 데이터 확인용
 //		for (BookInfoVO book : books) {
@@ -49,29 +55,28 @@ public class AppraisalController {
 //			logger.debug("Book_sum:" + book.getBook_sum());
 //			logger.debug("Book_cover:" + book.getBook_cover());
 //		}
-		model.addAttribute("books", books);
 		return "bookInfoList";
 	}
 
-	// 도서 상세보기 및 평가작성(form)  
+	// 도서 상세보기 및 평가작성(form)
 	@GetMapping(value = "/read/{isbn}")
-	public String bookDetail(@PathVariable("isbn") String isbn, Model model) {
-		
-		//도서 상세보기
-		BookInfoVO book = appraisalService.bookDetail(isbn);
-		if (book == null) {
-			return "bookInfoList";
-		}
-		model.addAttribute("book", book);
-		
-		//해당 도서의 대한 평가 갯수
-		int commentCount = appraisalService.commentCount(isbn);
+	public String bookDetailAndComment(@PathVariable("isbn") String isbn, Model model) {
+
+//		// 도서 상세보기
+//		BookInfoVO book = appraisalService.bookDetail(isbn);
+//		if (book == null) {
+//			return "bookInfoList";
+//		}
+//		model.addAttribute("book", book);
+
+		// 해당 도서의 대한 평가 갯수
+//		int commentCount = appraisalService.commentCount(isbn);
 //		logger.debug("count : " + commentCount);
-		model.addAttribute("commentCount", commentCount);
-		
-		//해당 도서의 대한 모든 평가 불러오기
-		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
-		
+//		model.addAttribute("commentCount", commentCount);
+
+		// 해당 도서의 대한 모든 평가 불러오기
+//		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
+
 //		for (allCommentByBookCmd test : commentsByMembers) {
 //			logger.debug("mem_id:" + test.getMem_id());
 //			logger.debug("mem_pic:" + test.getMem_pic());
@@ -81,17 +86,17 @@ public class AppraisalController {
 //			logger.debug("end_date:" + test.getEnd_date());
 //		}
 //		
-		model.addAttribute("commentsByMembers", commentsByMembers);
+//		model.addAttribute("commentsByMembers", commentsByMembers);
 		return "detailAndComment";
 	}
-	
-	//평가 작성(insert)
+
+	// 평가 작성(insert)
 	@PostMapping(value = "/read/{isbn}")
-	public String writeComment(@PathVariable("isbn") String isbn, AppraisalVO appraisal, Model model) {		
+	public String writeComment(@PathVariable("isbn") String isbn, @RequestParam String query, AppraisalVO appraisal, Model model) {
 
 		AppraisalVO comment = new AppraisalVO();
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 6;	//테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 6; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
 		comment.setStar(appraisal.getStar());
@@ -104,21 +109,96 @@ public class AppraisalController {
 //		System.out.println(appraisal.getEnd_date());		
 		comment.setCo_prv(appraisal.getCo_prv());
 //		System.out.println(appraisal.getCo_prv());
-		comment.setMem_num(member.getMem_num());
-//		System.out.println(member.getMem_num());
-		comment.setIsbn(isbn);
-//		System.out.println(appraisal.getIsbn());
 		appraisalService.writeComment(comment);
-		
-		return "redirect:/AppraisalPage/read/{isbn}";
+		System.out.println(query);
+		model.addAttribute("query","파");
+
+		return "/AppraisalPage/read/{isbn}";
 	}
+	
+	//메인 페이지
+	@RequestMapping(value="/list", produces = "application/json")
+	public String jsonPasing(@ModelAttribute("searchCmd")BookJsonVO isbn, Model model)throws Exception {
+	
+	System.out.println("?????");
+		final String base_url = "https://dapi.kakao.com/v3/search/book?target=title";
+		final String auth_key = "KakaoAK" + " 6f9ab74953bbcacc4423564a74af264e";
+		
 
-//	// 해당 도서의 대한 평가 갯수
-//	@RequestMapping(value = "/read/{isbn}")
-//	public allCommentByBookCmd commentCount(String isbn, Model model) {
-//		allCommentByBookCmd commentCount = appraisalService.commentCount(isbn);
-//		model.addAttribute("commentCount", commentCount);
-//		return "detailAndComment";
-//	}
+			/**
+			 *  REST API 호출하기
+			 */
+			URL url = null;
+			HttpURLConnection con= null;
+			JSONObject result = null;
+			StringBuilder sb = new StringBuilder();
+			try {
+				// URL 객채 생성 (BASE_URL)
+				url = new URL(base_url);
+				// URL을 참조하는 객체를 URLConnection 객체로 변환
+				con = (HttpURLConnection) url.openConnection();
 
+				// 커넥션 request 방식 "GET"으로 설정
+				con.setRequestMethod("GET");
+
+				// 커넥션 request 값 설정(key,value) 
+				con.setRequestProperty("Content-type", "application/json");
+				con.setRequestProperty("Authorization", auth_key);
+				// setRequestProperty (key,value) 다른 예시
+				// con.setRequestProperty("X-Auth-Token", AUTH_TOKEN);
+
+				// 받아온 JSON 데이터 출력 가능 상태로 변경 (default : false)
+				con.setDoOutput(true);
+
+				// 데이터 입력 스트림에 담기
+				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+				while(br.ready()) {
+					sb.append(br.readLine());
+				}
+				con.disconnect();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+
+			/**
+			 *  JSON 데이터 파싱하기
+			 */
+			// JSONParser에 입력 스트림에 담은 JSON데이터(sb.toString())를 넣어 파싱한 다음 JSONObject로 반환한다.
+			
+				result = (JSONObject) new JSONParser().parse(sb.toString());
+				
+
+			// REST API 호출 상태 출력하기
+			StringBuilder out = new StringBuilder();
+			out.append(result.get("status") +" : " + result.get("status_message") +"\n");
+
+			// JSON데이터에서 "documents"라는 JSONObject를 가져온다.
+			JSONObject meta = (JSONObject) result.get("meta");
+			// JSONObject에서 Array데이터를 get하여 JSONArray에 저장한다.
+			JSONArray array = (JSONArray) meta.get("documents");
+
+			// 데이터 출력하기 (도서 제목만 우선꺼내기 테스트용 )
+			JSONObject tmp;
+			out.append("데이터 출력하기 \n");
+			for(int i=0; i<array.size(); i++) {
+				tmp = (JSONObject) array.get(i);
+				out.append("title("+i+") :"+ tmp.get("title") +"\n");
+
+				// movies[] 배열 안에 있는 genres[] 데이터 꺼내기
+//				JSONArray array2 = (JSONArray) tmp.get("genres");
+//				out.append("genres("+i+"): ");
+//				for(int j=0; j<array2.size(); j++) {
+//					out.append(array2.get(j));
+//					if(j!=array2.size()-1) {
+//						out.append(",");
+//					}
+//				}
+				out.append("\n");
+				out.append("\n");
+			}
+			System.out.println(out.toString());
+			
+			model.addAttribute("isbn", isbn);
+			return "detailAndComment";
+	}
 }

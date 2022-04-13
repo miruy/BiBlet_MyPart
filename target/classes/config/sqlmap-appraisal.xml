@@ -3,19 +3,17 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="AppraisalDAO">
-	<!-- 아래 예시와 다르게 테이블 명 / 컬럼을 대문자로, 쿼리문장을 소문자로 작성하기 -->
+<!-- 	<select id="findAllBook" resultType="bookInfo"> -->
+<!-- 		SELECT * FROM bookinfo ORDER BY isbn -->
+<!-- 	</select> -->
 
-	<select id="findAllBook" resultType="bookInfo">
-		SELECT * FROM bookinfo ORDER BY isbn
-	</select>
-
-	<select id="bookDetail" parameterType="String" resultType="bookInfo">
-		SELECT * FROM bookinfo WHERE isbn=#{isbn, jdbcType=VARCHAR}
-	</select>
+<!-- 	<select id="bookDetail" parameterType="String" resultType="bookInfo"> -->
+<!-- 		SELECT * FROM bookinfo WHERE isbn=#{isbn, jdbcType=VARCHAR} -->
+<!-- 	</select> -->
 	
 	<insert id="writeComment" parameterType="appraisal">
-	INSERT INTO appraisal(appraisal_num, star, book_comment, start_date, end_date, co_prv, mem_num, isbn)
-	VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv}, #{mem_num}, #{isbn})
+	INSERT INTO appraisal(appraisal_num, star, book_comment, start_date, end_date, co_prv, mem_num, book_status_num)
+	VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv}, #{mem_num}, #{book_status_num})
 	</insert>
 	
 	

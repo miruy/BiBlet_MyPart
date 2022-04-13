@@ -23,16 +23,16 @@ public class AppraisalServiceImpl implements AppraisalService {
 	}
 
 	// 도서 전체 목록
-	@Override
-	public List<BookInfoVO> findAllBook() {
-		return appraisalDAO.findAllBook();
-	}
+//	@Override
+//	public List<BookInfoVO> findAllBook() {
+//		return appraisalDAO.findAllBook();
+//	}
 
 	// 도서 상세보기
-	@Override
-	public BookInfoVO bookDetail(String isbn) {
-		return appraisalDAO.bookDetail(isbn);
-	}
+//	@Override
+//	public BookInfoVO bookDetail(String isbn) {
+//		return appraisalDAO.bookDetail(isbn);
+//	}
 
 	//평가(코멘트) 작성
 	@Override
