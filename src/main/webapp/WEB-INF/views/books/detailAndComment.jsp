@@ -9,31 +9,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BiBlet 도서 상세/평가</title>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> 
-  	<!-- 도서 검색 -->
-    <script>
-        $(document).ready(function () {
-            var pageNum = 1;
-            	$.ajax({	//카카오 검색요청 / [요청]
-                    method: "GET",
-                    url: "https://dapi.kakao.com/v3/search/book",
-                    data: { query: $("#query").val(), page: pageNum},
-                    headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
-                })
-                
-                .done(function (msg) {	//검색 결과 담기 / [응답]
-                	console.log(msg);
-                    for (var i = 0; i < 10; i++){
-                        $("div").append("<img src='" + msg.documents[i].thumbnail + "'/><br>");		//표지
-                        $("div").append("<h2><a href='${pageContext.request.contextPath}/AppraisalPage/read/"+ msg.documents[i].isbn.slice(0, 10)+"'>" + msg.documents[i].title + "</a></h2>");	//제목
-                        $("div").append("<strong>저자:</strong> " + msg.documents[i].authors + "<br>");		//저자	
-                        $("div").append("<strong>출판사:</strong> " + msg.documents[i].publisher + "<br>");		//출판사
-                        $("div").append("<strong>줄거리:</strong> " + msg.documents[i].contents + "...<br>");		//줄거리
-                    	$("div").append("<strong>일련번호:</strong>" + msg.documents[i].isbn + "<br>");	//일련번호
-                    }
-                });
-           
-        })    
- 	 </script>
 </head>
 <body>
 	<form method="get" action="/BiBlet/AppraisalPage/list">
@@ -46,12 +21,13 @@
 			</select> 
 			
 			<input type="text" name="query" id="query" value="${query}" placeholder="제목, 저자 또는 출판사 검색" size=30> 
+			<input type="hidden" name="isbn" id="isbn" value="${isbn}">
 			<button id="search">검색</button>
  			</p>
 	</form>
 	
-	 <div>
-		 <img src="${msg.documents[i].thumbnail}"/><br> 
+	 <div id="bookInfo">
+		 
 	 </div>
 
 
@@ -97,26 +73,51 @@
 	
 	<br>
 	
-<%-- 	<c:if test="${!empty commentCount}"> --%>
-<%-- 		평가 총 개수 : ${commentCount}	 --%>
-<%-- 	</c:if> --%>
+	<c:if test="${!empty commentCount}">
+		평가 총 개수 : ${commentCount}	
+	</c:if>
 	
-<!-- 	<br> -->
+	<br>
 	
-<%-- 	<c:if test="${!empty commentsByMembers}"> --%>
-<%-- 		<c:forEach var="commentsByMember" items="${commentsByMembers}"> --%>
-<!-- 			<p> -->
-<%-- 			평가 번호 : ${commentsByMember.appraisal_num} --%>
-<%-- 			회원 : ${commentsByMember.mem_id} --%>
-<%-- 			프로필 : ${commentsByMember.mem_pic} --%>
-<%-- 			별점 : ${commentsByMember.star} --%>
-<%-- 			시작날짜 : ${commentsByMember.start_date} --%>
-<%-- 			다 읽은 날짜 : ${commentsByMember.end_date} --%>
-<%-- 			평가 : ${commentsByMember.book_comment} --%>
-<!-- 			</p> -->
-<%-- 		</c:forEach> --%>
-<%-- 	</c:if> --%>
-
+	<c:if test="${!empty commentsByMembers}">
+		<c:forEach var="commentsByMember" items="${commentsByMembers}">
+			<p>
+			평가 번호 : ${commentsByMember.appraisal_num}
+			회원 : ${commentsByMember.mem_id}
+			프로필 : ${commentsByMember.mem_pic}
+			별점 : ${commentsByMember.star}
+			시작날짜 : ${commentsByMember.start_date}
+			다 읽은 날짜 : ${commentsByMember.end_date}
+			평가 : ${commentsByMember.book_comment}
+			</p>
+		</c:forEach>
+	</c:if>
+	
+	
+	<!-- 도서 검색 -->
+    <script>
+        $(document).ready(function () {
+            var pageNum = 1;
+            	$.ajax({	//카카오 검색요청 / [요청]
+                    method: "GET",
+                    url: "https://dapi.kakao.com/v3/search/book",
+                    data: { query: $("#query").val(), page: pageNum},
+                    headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
+                })
+               
+                .done(function (msg) {	//검색 결과 담기 / [응답]
+                	console.log(msg);
+                        $("#bookInfo").append("<img src='" + msg.documents[0].thumbnail + "'/><br>");		//표지
+                        $("#bookInfo").append("<h2>"+ msg.documents[0].title + "</h2>");	//제목
+                        $("#bookInfo").append("<strong>저자:</strong> " + msg.documents[0].authors + "<br>");		//저자	
+                        $("#bookInfo").append("<strong>출판사:</strong> " + msg.documents[0].publisher + "<br>");		//출판사
+                        $("#bookInfo").append("<strong>줄거리:</strong> " + msg.documents[0].contents + "...<br>");		//줄거리
+                    	$("#bookInfo").append("<strong>일련번호:</strong>" + msg.documents[0].isbn + "<br>");	//일련번호
+                    	var isbn = msg.documents[0].isbn;
+                });
+           
+        })    
+ 	 </script>
 
 </body>
 </html>

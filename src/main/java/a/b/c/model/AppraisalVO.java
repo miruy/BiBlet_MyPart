@@ -81,4 +81,13 @@ public class AppraisalVO {
 	public void setBook_status_num(int book_status_num) {
 		this.book_status_num = book_status_num;
 	}
+
+	@Override
+	public String toString() {
+		return "AppraisalVO [appraisal_num=" + appraisal_num + ", star=" + star + ", book_comment=" + book_comment
+				+ ", start_date=" + start_date + ", end_date=" + end_date + ", co_prv=" + co_prv + ", book_status_num="
+				+ book_status_num + "]";
+	}
+	
 }
+

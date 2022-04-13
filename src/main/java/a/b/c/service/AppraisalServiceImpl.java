@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import a.b.c.model.AppraisalVO;
-import a.b.c.model.BookInfoVO;
 import a.b.c.model.MemberVO;
 import a.b.c.model.allCommentByBookCmd;
 import a.b.c.repository.AppraisalDAO;

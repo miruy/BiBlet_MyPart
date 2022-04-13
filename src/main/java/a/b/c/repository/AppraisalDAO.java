@@ -3,7 +3,6 @@ package a.b.c.repository;
 import java.util.List;
 
 import a.b.c.model.AppraisalVO;
-import a.b.c.model.BookInfoVO;
 import a.b.c.model.allCommentByBookCmd;
 
 public interface AppraisalDAO {

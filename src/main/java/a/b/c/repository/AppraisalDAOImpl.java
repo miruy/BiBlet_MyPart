@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import a.b.c.HomeController;
 import a.b.c.model.AppraisalVO;
-import a.b.c.model.BookInfoVO;
 import a.b.c.model.allCommentByBookCmd;
 
 @Repository

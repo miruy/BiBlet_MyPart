@@ -40,28 +40,47 @@ public class AppraisalController {
 	// 모든 도서 정보 불러오기
 	@GetMapping(value = "/list")
 	public String findAllBook(Model model) {
-		
-
-////		DB에서 불러온 데이터 확인용
-//		for (BookInfoVO book : books) {
-//			logger.debug("isbn:" + book.getIsbn());
-//			logger.debug("Book_name:" + book.getBook_name());
-//			logger.debug("Publisher:" + book.getPublisher());
-//			logger.debug("Author:" + book.getAuthor());
-//			// logger.debug("Produc_year:"+book.getProduc_year().toString());
-//			logger.debug("Book_page:" + Integer.toString(book.getBook_page()));
-//			logger.debug("Book_category:" + book.getBook_category());
-//			logger.debug("Age_grade:" + book.getAge_grade());
-//			logger.debug("Book_sum:" + book.getBook_sum());
-//			logger.debug("Book_cover:" + book.getBook_cover());
-//		}
 		return "bookInfoList";
 	}
 
 	// 도서 상세보기 및 평가작성(form)
 	@GetMapping(value = "/read/{isbn}")
-	public String bookDetailAndComment(@PathVariable("isbn") String isbn, Model model) {
+	public String bookDetailAndComment(@RequestParam String isbn, @RequestParam String query, AppraisalVO appraisal, Model model) {
+		System.out.println("bookDetailAndComment");
+		
+		AppraisalVO comment = new AppraisalVO();
+		MemberVO member = new MemberVO();
+		Long mem_num = (long) 6; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		member.setMem_num(mem_num);
+		
+		
+		
+		comment.setStar(appraisal.getStar());
+//		System.out.println(appraisal.getStar());		
+		comment.setBook_comment(appraisal.getBook_comment());
+//		System.out.println(appraisal.getBook_comment());		
+		comment.setStart_date(appraisal.getStart_date());
+//		System.out.println(appraisal.getStart_date());		
+		comment.setEnd_date(appraisal.getEnd_date());
+//		System.out.println(appraisal.getEnd_date());		
+		comment.setCo_prv(appraisal.getCo_prv());
+	
+		comment.setBook_status_num(2); 	//평가 작성은 독서완료(2)일 때 허용
+		System.out.println(appraisal.getBook_status_num());
+		
+		logger.info(""+comment);
+		
+		appraisalService.writeComment(comment);
+		
+		System.out.println(isbn);
+		System.out.println(query);
+		model.addAttribute("isbn", isbn);
+		model.addAttribute("query", query);
 
+		return "detailAndComment";
+		
+		
+		
 //		// 도서 상세보기
 //		BookInfoVO book = appraisalService.bookDetail(isbn);
 //		if (book == null) {
@@ -87,7 +106,7 @@ public class AppraisalController {
 //		}
 //		
 //		model.addAttribute("commentsByMembers", commentsByMembers);
-		return "detailAndComment";
+		//return "detailAndComment";
 	}
 
 	// 평가 작성(insert)
@@ -110,8 +129,9 @@ public class AppraisalController {
 		comment.setCo_prv(appraisal.getCo_prv());
 //		System.out.println(appraisal.getCo_prv());
 		appraisalService.writeComment(comment);
+		
 		System.out.println(query);
-		model.addAttribute("query","파");
+		model.addAttribute("query", query);
 
 		return "/AppraisalPage/read/{isbn}";
 	}
