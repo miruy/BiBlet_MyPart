@@ -17,29 +17,29 @@
 	</insert>
 	
 	
-	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd">
-	<!-- 	 MEMBER,APPRAISAL 조인   -->
-	SELECT 
-	 appraisal.appraisal_num,
- 	 appraisal.star,
- 	 appraisal.book_comment,
- 	 appraisal.start_date,
- 	 appraisal.end_date,
- 	 member.mem_id,
- 	 member.mem_pic
-	FROM bookinfo
-	INNER JOIN appraisal ON appraisal.isbn = bookinfo.isbn
-	INNER JOIN member ON member.mem_num = appraisal.mem_num
-	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개'
-	</select>
+<!-- 	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd"> -->
+<!-- 	 MEMBER,APPRAISAL 조인   --> 
+<!-- 	SELECT  -->
+<!-- 	 appraisal.appraisal_num, -->
+<!--  	 appraisal.star, -->
+<!--  	 appraisal.book_comment, -->
+<!--  	 appraisal.start_date, -->
+<!--  	 appraisal.end_date, -->
+<!--  	 member.mem_id, -->
+<!--  	 member.mem_pic -->
+<!-- 	FROM bookinfo -->
+<!-- 	INNER JOIN appraisal ON appraisal.isbn = bookinfo.isbn -->
+<!-- 	INNER JOIN member ON member.mem_num = appraisal.mem_num -->
+<!-- 	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개' -->
+<!-- 	</select> -->
 	
-	<select id="commentCount" parameterType="String" resultType="Integer">
-	SELECT 
-	COUNT(appraisal.book_comment)
-	FROM appraisal
-	INNER JOIN bookinfo ON bookinfo.isbn = appraisal.isbn
-	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개'
-	</select>
+<!-- 	<select id="commentCount" parameterType="String" resultType="Integer"> -->
+<!-- 	SELECT  -->
+<!-- 	COUNT(appraisal.book_comment) -->
+<!-- 	FROM appraisal -->
+<!-- 	INNER JOIN bookinfo ON bookinfo.isbn = appraisal.isbn -->
+<!-- 	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개' -->
+<!-- 	</select> -->
 
 
 	<!-- <select id="search" parameterType="HashMap" resultType="book"> -->

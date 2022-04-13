@@ -21,7 +21,6 @@
 			</select> 
 			
 			<input type="text" name="query" id="query" value="${query}" placeholder="제목, 저자 또는 출판사 검색" size=30> 
-			<input type="hidden" name="isbn" id="isbn" value="${isbn}">
 			<button id="search">검색</button>
  			</p>
 	</form>
@@ -33,7 +32,7 @@
 
 	<br>
 
-	<form method="post">
+	<form method="post" commandName="appraisal">
 		<table border="1">
 			<tr>
 				<th>별점</th>
@@ -113,7 +112,7 @@
                         $("#bookInfo").append("<strong>출판사:</strong> " + msg.documents[0].publisher + "<br>");		//출판사
                         $("#bookInfo").append("<strong>줄거리:</strong> " + msg.documents[0].contents + "...<br>");		//줄거리
                     	$("#bookInfo").append("<strong>일련번호:</strong>" + msg.documents[0].isbn + "<br>");	//일련번호
-                    	var isbn = msg.documents[0].isbn;
+                    	
                 });
            
         })    

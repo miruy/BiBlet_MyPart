@@ -8,12 +8,12 @@ public class AppraisalVO {
 	private String start_date; // 도서 구독 시작 날짜
 	private String end_date; // 도서 구독 완료 날짜
 	private String co_prv; // 코멘트 공개 여부
-	private int book_status_num;	//상태번호FK
+	private Long book_status_num;	//상태번호FK
 
 	public AppraisalVO() {}
 
 	public AppraisalVO(Long appraisal_num, int star, String book_comment, String start_dater,
-			String end_date, String co_prv, int book_status_num) {
+			String end_date, String co_prv, Long book_status_num) {
 
 		this.appraisal_num = appraisal_num;
 		this.star = star;
@@ -39,8 +39,6 @@ public class AppraisalVO {
 	public void setStar(int star) {
 		this.star = star;
 	}
-
-
 
 	public String getBook_comment() {
 		return book_comment;
@@ -74,11 +72,11 @@ public class AppraisalVO {
 		this.co_prv = co_prv;
 	}
 
-	public int getBook_status_num() {
+	public Long getBook_status_num() {
 		return book_status_num;
 	}
 
-	public void setBook_status_num(int book_status_num) {
+	public void setBook_status_num(Long book_status_num) {
 		this.book_status_num = book_status_num;
 	}
 
