@@ -104,8 +104,8 @@ public class AppraisalController {
 		appraisal.setCo_prv(commentCmd.getCo_prv());
 		System.out.println("공개여부 : " + commentCmd.getCo_prv());
 		
-		appraisal.setBook_status_num((long)2);
-		System.out.println("독성상태 : " + appraisal.getBook_status_num());
+//		appraisal.setBook_status_num((long)2);
+//		System.out.println("독성상태 : " + appraisal.getBook_status_num());
 		
 		System.out.println("isbn : " + commentCmd.getIsbn());
 		

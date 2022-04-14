@@ -12,6 +12,5 @@ public interface AppraisalService {
 	public void writeComment(AppraisalVO appraisal);	//평가(코멘트) 작성
 	public void insertBookShelf(BookShelfVO bookShelf); 	//평가 작성 시 도서ISBN 과 상태(독서완료)저장 
 	public List<allCommentByBookCmd> findAllComment(String isbn); //해당 도서의 대한 모든 평가 불러오기
-	// BOOkSHELF insert 코드 만들기
 	public int commentCount(String isbn); 	//해당 도서의 대한 평가 갯수
 }
