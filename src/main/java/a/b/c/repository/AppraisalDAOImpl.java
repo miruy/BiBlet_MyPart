@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import a.b.c.HomeController;
 import a.b.c.model.AppraisalVO;
+import a.b.c.model.BookShelfVO;
 import a.b.c.model.allCommentByBookCmd;
 
 @Repository
@@ -42,6 +43,12 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 	@Override
 	public void writeComment(AppraisalVO appraisal) {
 		sqlSessionTemplate.insert("writeComment", appraisal);
+	}
+	
+	//평가 작성 시 도서 ISBN과 상태(독서완료) 작성
+	@Override
+	public void insertBookShelf(BookShelfVO bookShelf) {
+		sqlSessionTemplate.insert("insertBookShelf", bookShelf);
 	}
 
 //	//해당 도서의 대한 모든 평가 불러오기

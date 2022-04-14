@@ -1,7 +1,5 @@
 package a.b.c.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import a.b.c.HomeController;
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
+import a.b.c.model.CommentCmd;
 import a.b.c.model.MemberVO;
-import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 
 @Controller
@@ -52,52 +50,66 @@ public class AppraisalController {
 //		model.addAttribute("commentCount", commentCount);
 
 		// 해당 도서의 대한 모든 평가 불러오기
-		String isbn = "1162203625";
-		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
-
-		for (allCommentByBookCmd test : commentsByMembers) {
-			logger.debug("mem_id:" + test.getMem_id());
-			logger.debug("mem_pic:" + test.getMem_pic());
-			logger.debug("star:" + Integer.toString(test.getStar()));
-			logger.debug("book_comment:" + test.getBook_comment());
-			logger.debug("start_date:" + test.getStart_date());
-			logger.debug("end_date:" + test.getEnd_date());
-		}
-		
-		model.addAttribute("commentsByMembers", commentsByMembers);
+//		String isbn = "1162203625";
+//		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
+//
+//		for (allCommentByBookCmd test : commentsByMembers) {
+//			logger.debug("mem_id:" + test.getMem_id());
+//			logger.debug("mem_pic:" + test.getMem_pic());
+//			logger.debug("star:" + Integer.toString(test.getStar()));
+//			logger.debug("book_comment:" + test.getBook_comment());
+//			logger.debug("start_date:" + test.getStart_date());
+//			logger.debug("end_date:" + test.getEnd_date());
+//		}
+//		
+//		model.addAttribute("commentsByMembers", commentsByMembers);
 		
 		return "detailAndComment";
 	}
 
 	// 평가 작성(insert)
 	@PostMapping(value = "/read/{isbn}")
-	public String writeComment(@ModelAttribute("appraisal")AppraisalVO appraisal, Model model) {
+	public String writeComment(@ModelAttribute("appraisal")CommentCmd commentCmd, Model model) {
 	
-		AppraisalVO comment = new AppraisalVO();
+		AppraisalVO appraisal = new AppraisalVO();
+		BookShelfVO bookShelf = new BookShelfVO();
+		
 		MemberVO member = new MemberVO();
 		Long mem_num = (long) 1; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 		
-
-		comment.setStar(appraisal.getStar());
-		System.out.println(appraisal.getStar());	
 		
-		comment.setBook_comment(appraisal.getBook_comment());
-		System.out.println(appraisal.getBook_comment());	
+		appraisal.setStar(commentCmd.getStar());
+		System.out.println("별점 : " + commentCmd.getStar());	
 		
-		comment.setStart_date(appraisal.getStart_date());
-		System.out.println(appraisal.getStart_date());
+		appraisal.setBook_comment(commentCmd.getBook_comment());
+		System.out.println("평가 : " + commentCmd.getBook_comment());	
 		
-		comment.setEnd_date(appraisal.getEnd_date());
-		System.out.println(appraisal.getEnd_date());
+		appraisal.setStart_date(commentCmd.getStart_date());
+		System.out.println("시작날짜 : " + commentCmd.getStart_date());
 		
-		comment.setCo_prv(appraisal.getCo_prv());
-		System.out.println(appraisal.getCo_prv());
+		appraisal.setEnd_date(commentCmd.getEnd_date());
+		System.out.println("다읽은날짜 : " + commentCmd.getEnd_date());
 		
-		comment.setBook_status_num((long)2);
-		System.out.println(comment.getBook_status_num());
+		appraisal.setCo_prv(commentCmd.getCo_prv());
+		System.out.println("공개여부 : " + commentCmd.getCo_prv());
 		
-		appraisalService.writeComment(comment);
+		appraisal.setBook_status_num((long)2);
+		System.out.println("독성상태 : " + appraisal.getBook_status_num());
+		
+		System.out.println("isbn : " + commentCmd.getIsbn());
+		
+		bookShelf.setBook_status(2);
+		System.out.println("보관함에 들어갈 독서상태 : " + bookShelf.getBook_status());
+		
+		bookShelf.setMem_num(member.getMem_num());
+		System.out.println("보관함에 들어갈 이평가작성한 회원번호 : " + bookShelf.getMem_num());
+		
+		bookShelf.setIsbn(commentCmd.getIsbn());
+		System.out.println("보관함에 들어갈 ISBN : " + bookShelf.getIsbn());
+		
+		appraisalService.insertBookShelf(bookShelf);
+		appraisalService.writeComment(appraisal);
 
 		return "detailAndComment";
 	}

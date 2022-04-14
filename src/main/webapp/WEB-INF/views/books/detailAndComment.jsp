@@ -61,8 +61,8 @@
 
 			<tr>
 				<th>평가 공개 여부</th>
-				<td><input type="checkbox" name="co_prv" value="공개" />공개 <input
-					type="checkbox" name="co_prv" value="비공개" />비공개</td>
+				<td><input type="checkbox" name="co_prv" value="공개" />공개 
+				<input type="checkbox" name="co_prv" value="비공개" />비공개</td>
 			</tr>
 				<tr>
 				<td>
@@ -114,9 +114,8 @@
                         $("#bookInfo").append("<strong>저자:</strong> " + msg.documents[0].authors + "<br>");		//저자	
                         $("#bookInfo").append("<strong>출판사:</strong> " + msg.documents[0].publisher + "<br>");		//출판사
                         $("#bookInfo").append("<strong>줄거리:</strong> " + msg.documents[0].contents + "...<br>");		//줄거리
-                        $("#isbn").append(msg.documents[0].isbn);
-                });
-           
+                        $("#isbn").val(msg.documents[0].isbn.slice(0,10));
+                });      
         })    
  	 </script>
 

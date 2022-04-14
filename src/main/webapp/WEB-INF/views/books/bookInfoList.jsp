@@ -48,7 +48,7 @@
                         $("div").append("<strong>저자:</strong> " + msg.documents[i].authors + "<br>");		//저자	
                         $("div").append("<strong>출판사:</strong> " + msg.documents[i].publisher + "<br>");		//출판사
                         $("div").append("<strong>줄거리:</strong> " + msg.documents[i].contents + "...<br>");		//줄거리
-                    	$("div").append("<strong>일련번호:</strong>" + msg.documents[i].isbn + "<br>");	//일련번호
+                    	$("#isbn").append("<strong>일련번호:</strong>" + msg.documents[i].isbn + "<br>");	//일련번호
                     }
                 });
             })

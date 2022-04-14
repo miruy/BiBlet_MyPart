@@ -1,13 +1,12 @@
 package a.b.c.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import a.b.c.model.AppraisalVO;
+import a.b.c.model.BookShelfVO;
 import a.b.c.model.allCommentByBookCmd;
 import a.b.c.repository.AppraisalDAO;
 
@@ -45,6 +44,12 @@ public class AppraisalServiceImpl implements AppraisalService {
 	@Override
 	public List<allCommentByBookCmd> findAllComment(String isbn) {
 		return appraisalDAO.findAllComment(isbn);
+	}
+	
+	//평가 작성 시 도서isbn과 상태(독서완료) 저장
+	@Override
+	public void insertBookShelf(BookShelfVO bookShelf) {
+		appraisalDAO.insertBookShelf(bookShelf);
 	}
 //	
 //	//해당 도서의 대한 평가 갯수
