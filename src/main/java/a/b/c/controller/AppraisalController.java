@@ -1,5 +1,9 @@
 package a.b.c.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +22,7 @@ import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
 import a.b.c.model.CommentCmd;
 import a.b.c.model.MemberVO;
+import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 
 @Controller
@@ -37,39 +43,43 @@ public class AppraisalController {
 
 	// 도서 상세보기 및 평가작성(form)
 	@GetMapping(value = "/read/{isbn}")
-	public String bookDetailAndComment(@RequestParam(required = false)String query, Model model) {
+	public String bookDetailAndComment(@RequestParam(required = false)String query, @PathVariable String isbn, Model model) {
 		System.out.println("bookDetailAndComment");	
 		
-		System.out.println(query);
+		System.out.println("get방식 : " + query);
 		
-		model.addAttribute("query", query);
+		model.addAttribute("query", query.split(",")[0]);
+		
+		System.out.println("아가미 검색시 query : "+ query);
+		System.out.println("read뒤에 isbn: " + isbn);
 
 		// 해당 도서의 대한 평가 갯수
-//		int commentCount = appraisalService.commentCount(isbn);
-//		logger.debug("count : " + commentCount);
-//		model.addAttribute("commentCount", commentCount);
+		int commentCount = appraisalService.commentCount(isbn);
+		
+		logger.debug("count : " + commentCount);
+		model.addAttribute("commentCount", commentCount);
 
 		// 해당 도서의 대한 모든 평가 불러오기
-//		String isbn = "1162203625";
-//		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
-//
-//		for (allCommentByBookCmd test : commentsByMembers) {
-//			logger.debug("mem_id:" + test.getMem_id());
-//			logger.debug("mem_pic:" + test.getMem_pic());
-//			logger.debug("star:" + Integer.toString(test.getStar()));
-//			logger.debug("book_comment:" + test.getBook_comment());
-//			logger.debug("start_date:" + test.getStart_date());
-//			logger.debug("end_date:" + test.getEnd_date());
-//		}
-//		
-//		model.addAttribute("commentsByMembers", commentsByMembers);
+		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
+		System.out.println("모든 평가 불러올 isbn: " + isbn);
+
+		for (allCommentByBookCmd test : commentsByMembers) {
+			logger.debug("mem_id:" + test.getMem_id());
+			logger.debug("mem_pic:" + test.getMem_pic());
+			logger.debug("star:" + Integer.toString(test.getStar()));
+			logger.debug("book_comment:" + test.getBook_comment());
+			logger.debug("start_date:" + test.getStart_date());
+			logger.debug("end_date:" + test.getEnd_date());
+		}
+		
+		model.addAttribute("commentsByMembers", commentsByMembers);
 		
 		return "detailAndComment";
 	}
 
 	// 평가 작성(insert)
 	@PostMapping(value = "/read/{isbn}")
-	public String writeComment(@ModelAttribute("appraisal")CommentCmd commentCmd, Model model) {
+	public String writeComment(@ModelAttribute("appraisal")CommentCmd commentCmd, Model model) throws UnsupportedEncodingException {
 	
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
@@ -108,10 +118,17 @@ public class AppraisalController {
 		bookShelf.setIsbn(commentCmd.getIsbn());
 		System.out.println("보관함에 들어갈 ISBN : " + bookShelf.getIsbn());
 		
+		System.out.println("query : " + commentCmd.getQuery());
+		
 		appraisalService.insertBookShelf(bookShelf);
 		appraisalService.writeComment(appraisal);
-
-		return "detailAndComment";
+		
+		String encodedParam = URLEncoder.encode(commentCmd.getQuery(), "UTF-8");
+		System.out.println("encodedParam.indexOf(0) : "+encodedParam);
+		
+//		"redirect:/AppraisalPage/read/" + commentCmd.getIsbn() + "?query=" + encodedParam;
+		
+		return "redirect:/AppraisalPage/read/" + commentCmd.getIsbn() + "?query=" + encodedParam; 
 	}
 	
 	//메인 페이지

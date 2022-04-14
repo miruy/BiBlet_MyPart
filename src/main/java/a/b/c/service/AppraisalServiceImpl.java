@@ -51,12 +51,12 @@ public class AppraisalServiceImpl implements AppraisalService {
 	public void insertBookShelf(BookShelfVO bookShelf) {
 		appraisalDAO.insertBookShelf(bookShelf);
 	}
-//	
-//	//해당 도서의 대한 평가 갯수
-//	@Override
-//	public int commentCount(String isbn) {
-//		return appraisalDAO.commentCount(isbn);
-//	}
+	
+	//해당 도서의 대한 평가 갯수
+	@Override
+	public int commentCount(String isbn) {
+		return appraisalDAO.commentCount(isbn);
+	}
 }
 
 

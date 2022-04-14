@@ -7,11 +7,12 @@ public class CommentCmd {
 	private String end_date; // 도서 구독 완료 날짜
 	private String co_prv; // 코멘트 공개 여부
 	private String isbn;
+	private String query;
 
 	public CommentCmd() {}
 
 	public CommentCmd(int star, String book_comment, String start_dater,
-			String end_date, String co_prv, String isbn) {
+			String end_date, String co_prv, String isbn, String query) {
 
 		this.star = star;
 		this.book_comment = book_comment;
@@ -19,6 +20,7 @@ public class CommentCmd {
 		this.end_date = end_date;
 		this.co_prv = co_prv;;
 		this.isbn = isbn;
+		this.query = query;
 	}
 
 
@@ -68,6 +70,14 @@ public class CommentCmd {
 
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
+	}
+
+	public String getQuery() {
+		return query;
+	}
+
+	public void setQuery(String query) {
+		this.query = query;
 	}
 	
 }

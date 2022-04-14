@@ -56,10 +56,10 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 	public List<allCommentByBookCmd> findAllComment(String isbn) {
 		return sqlSessionTemplate.selectList("findAllComment", isbn);
 	}
-//
+
 //	//해당 도서의 대한 평가 갯수
-//	@Override
-//	public int commentCount(String isbn) {
-//		return sqlSessionTemplate.selectOne("commentCount", isbn);
-//	}
+	@Override
+	public int commentCount(String isbn) {
+		return sqlSessionTemplate.selectOne("commentCount", isbn);
+	}
 }

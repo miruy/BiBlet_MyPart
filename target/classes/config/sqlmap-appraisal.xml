@@ -15,7 +15,7 @@
 	</insert>
 	
 	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd">
-<!-- 	 MEMBER,APPRAISAL 조인    -->
+<!--     MEMBER,APPRAISAL 조인     -->
 	SELECT 
 	 appraisal.appraisal_num,
  	 appraisal.star,
@@ -27,18 +27,17 @@
 	FROM bookshelf
 	INNER JOIN appraisal ON bookshelf.book_status_num = appraisal.book_status_num
 	INNER JOIN member ON bookshelf.mem_num = member.mem_num
-	WHERE bookshelf.isbn=${isbn} AND appraisal.co_prv='공개'
+	WHERE bookshelf.isbn=#{isbn} AND appraisal.co_prv='공개'
 	</select>
 	
 	
-	
-<!-- 	<select id="commentCount" parameterType="String" resultType="Integer"> -->
-<!-- 	SELECT  -->
-<!-- 	COUNT(appraisal.book_comment) -->
-<!-- 	FROM appraisal -->
-<!-- 	INNER JOIN bookinfo ON bookinfo.isbn = appraisal.isbn -->
-<!-- 	WHERE bookinfo.isbn=#{isbn} AND appraisal.co_prv='공개' -->
-<!-- 	</select> -->
+	<select id="commentCount" parameterType="String" resultType="Integer">
+	SELECT 
+	 COUNT(appraisal.book_comment)
+    FROM bookshelf
+    INNER JOIN appraisal ON bookshelf.book_status_num = appraisal.book_status_num
+    WHERE bookshelf.isbn=#{isbn} AND appraisal.co_prv='공개'
+	</select>
 
 
 	<!-- <select id="search" parameterType="HashMap" resultType="book"> -->
