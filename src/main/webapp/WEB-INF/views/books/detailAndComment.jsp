@@ -25,12 +25,21 @@
 			<button id="search">검색</button>
  			</p>
  			
-	 <div id="bookInfo">
+	 
+		 <div id="bookInfo">
 		 
-	 </div>
+		 </div>
+	
 
+	<p>
+		<select name="option">
+			<option value="like">찜</option>
+			<option value="reading">보는 중</option>
+			<option value="">독서 완료</option>
+		</select>
+	</p>p
 
-	<br>
+	
 
 	<form method="post" commandName="appraisal">
 		<table border="1">
@@ -141,6 +150,8 @@
                         $("#bookInfo").append("<strong>저자:</strong> " + msg.documents[0].authors + "<br>");		//저자	
                         $("#bookInfo").append("<strong>출판사:</strong> " + msg.documents[0].publisher + "<br>");		//출판사
                         $("#bookInfo").append("<strong>줄거리:</strong> " + msg.documents[0].contents + "...<br>");		//줄거리
+                        $("#bookInfo").append("<strong>제작년도:</strong> " + msg.documents[0].datetime.slice(0,10) + "<br>");		//일련번호
+                        $("#bookInfo").append("<strong>ISBN:</strong> " + msg.documents[0].isbn.slice(0,10) + "<br>");		//일련번호
                         $("#isbn").val(msg.documents[0].isbn.slice(0,10));
                 });      
         })    
