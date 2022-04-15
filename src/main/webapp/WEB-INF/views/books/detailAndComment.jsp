@@ -15,7 +15,7 @@
 		
 			<p>
 			검색 키워드 입력 : 
-			<select name="option">
+			<select name="keyword">
 				<option value="title">제목</option>
 				<option value="author">저자</option>
 				<option value="publisher">출판사</option>
@@ -31,13 +31,14 @@
 		 </div>
 	
 
-	<p>
-		<select name="option">
-			<option value="like">찜</option>
-			<option value="reading">보는 중</option>
-			<option value="">독서 완료</option>
+	<form method="post" commandName="optionCmd">
+		<select name="option" id="option">
+			<option value=0>찜</option>
+			<option value=1>보는 중</option>
+			<option value=2>독서 완료</option>
 		</select>
-	</p>p
+<!-- 		<input type="submit" value="독서 상태 입력"> -->
+	</form>
 
 	
 
@@ -108,8 +109,11 @@
 	</c:if>
 	
 	
-	<!-- 도서 검색 -->
+	
     <script>
+//     도서 검색
+
+// 		도서 검색 버튼 클릭 시 도서 데이터 요청
 	   	 $(document).ready(function () {
 	        var pageNum = 1;
 	        $("#search").click(function () {	//검색 버튼 클릭시 ajax실행
@@ -134,7 +138,7 @@
 	        })
 	     
     
-    
+//     	상세페이지 실행하자마자 도서 데이터 요청
             var pageNum = 1;
             	$.ajax({	//카카오 검색요청 / [요청]
                     method: "GET",
@@ -154,9 +158,7 @@
                         $("#bookInfo").append("<strong>ISBN:</strong> " + msg.documents[0].isbn.slice(0,10) + "<br>");		//일련번호
                         $("#isbn").val(msg.documents[0].isbn.slice(0,10));
                 });      
-        })    
-        
-        
+      		  })    
  	 </script>
 
 </body>

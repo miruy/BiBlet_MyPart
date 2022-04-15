@@ -6,7 +6,8 @@
 	
 	<insert id="writeComment" parameterType="appraisal">
 	INSERT INTO appraisal(appraisal_num, star, book_comment, start_date, end_date, co_prv, book_status_num)
-	VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv}, #{book_status_num})
+	 VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv},
+	 (SELECT book_status_num from bookshelf WHERE bookshelf.mem_num = #{mem_num} AND bookshelf.book_status = 2));
 	</insert>
 	
 	<insert id="insertBookShelf" parameterType="bookShelf">

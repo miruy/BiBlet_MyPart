@@ -22,6 +22,7 @@ import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
 import a.b.c.model.CommentCmd;
 import a.b.c.model.MemberVO;
+import a.b.c.model.OptionCmd;
 import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 
@@ -43,19 +44,20 @@ public class AppraisalController {
 
 	// 도서 상세보기 및 평가작성(form)
 	@GetMapping(value = "/read/{isbn}")
-	public String bookDetailAndComment(@RequestParam(required = false)String query, @PathVariable String isbn, Model model) {
-		System.out.println("bookDetailAndComment");	
-		
+	public String bookDetailAndComment(@RequestParam(required = false) String query, @PathVariable String isbn,
+			Model model) {
+		System.out.println("bookDetailAndComment");
+
 		System.out.println("get방식 : " + query);
-		
+
 		model.addAttribute("query", query.split(",")[0]);
-		
-		System.out.println("아가미 검색시 query : "+ query);
+
+		System.out.println("아가미 검색시 query : " + query);
 		System.out.println("read뒤에 isbn: " + isbn);
 
 		// 해당 도서의 대한 평가 갯수
 		int commentCount = appraisalService.commentCount(isbn);
-		
+
 		logger.debug("count : " + commentCount);
 		model.addAttribute("commentCount", commentCount);
 
@@ -71,67 +73,115 @@ public class AppraisalController {
 			logger.debug("start_date:" + test.getStart_date());
 			logger.debug("end_date:" + test.getEnd_date());
 		}
-		
+
 		model.addAttribute("commentsByMembers", commentsByMembers);
-		
+
 		return "detailAndComment";
 	}
 
 	// 평가 작성(insert)
 	@PostMapping(value = "/read/{isbn}")
-	public String writeComment(@ModelAttribute("appraisal")CommentCmd commentCmd, Model model) throws UnsupportedEncodingException {
-	
+	public String writeComment(@ModelAttribute("appraisal") CommentCmd commentCmd, @ModelAttribute("optionCmd") OptionCmd optionCmd, Model model)
+			throws UnsupportedEncodingException {
+
 		AppraisalVO appraisal = new AppraisalVO();
-		BookShelfVO bookShelf = new BookShelfVO();
-		
+
+		//테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함 
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 1; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 10; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 		
 		
-		appraisal.setStar(commentCmd.getStar());
-		System.out.println("별점 : " + commentCmd.getStar());	
 		
-		appraisal.setBook_comment(commentCmd.getBook_comment());
-		System.out.println("평가 : " + commentCmd.getBook_comment());	
 		
-		appraisal.setStart_date(commentCmd.getStart_date());
-		System.out.println("시작날짜 : " + commentCmd.getStart_date());
-		
-		appraisal.setEnd_date(commentCmd.getEnd_date());
-		System.out.println("다읽은날짜 : " + commentCmd.getEnd_date());
-		
-		appraisal.setCo_prv(commentCmd.getCo_prv());
-		System.out.println("공개여부 : " + commentCmd.getCo_prv());
-		
-//		appraisal.setBook_status_num((long)2);
-//		System.out.println("독성상태 : " + appraisal.getBook_status_num());
-		
-		System.out.println("isbn : " + commentCmd.getIsbn());
-		
-		bookShelf.setBook_status(2);
+		BookShelfVO bookShelf = new BookShelfVO();
+
+		bookShelf.setBook_status(optionCmd.getOption());	//테스트용
 		System.out.println("보관함에 들어갈 독서상태 : " + bookShelf.getBook_status());
-		
+
 		bookShelf.setMem_num(member.getMem_num());
 		System.out.println("보관함에 들어갈 이평가작성한 회원번호 : " + bookShelf.getMem_num());
-		
+
 		bookShelf.setIsbn(commentCmd.getIsbn());
 		System.out.println("보관함에 들어갈 ISBN : " + bookShelf.getIsbn());
 		
-		System.out.println("query : " + commentCmd.getQuery());
-		
+
 		appraisalService.insertBookShelf(bookShelf);
+		
+		System.out.println("insertBookShelf성공");
+		
+		
+		
+		
+		
+
+		appraisal.setStar(commentCmd.getStar());
+		System.out.println("별점 : " + commentCmd.getStar());
+
+		appraisal.setBook_comment(commentCmd.getBook_comment());
+		System.out.println("평가 : " + commentCmd.getBook_comment());
+
+		appraisal.setStart_date(commentCmd.getStart_date());
+		System.out.println("시작날짜 : " + commentCmd.getStart_date());
+
+		appraisal.setEnd_date(commentCmd.getEnd_date());
+		System.out.println("다읽은날짜 : " + commentCmd.getEnd_date());
+
+		appraisal.setCo_prv(commentCmd.getCo_prv());
+		System.out.println("공개여부 : " + commentCmd.getCo_prv());
+
+		appraisal.setBook_status_num(bookShelf.getBook_status_num());
+		System.out.println(bookShelf.getBook_status_num());
+		System.out.println("독성상태 : " + appraisal.getBook_status_num());
+
+		System.out.println("isbn : " + commentCmd.getIsbn());
+
+		System.out.println("query : " + commentCmd.getQuery());
+
 		appraisalService.writeComment(appraisal);
+		System.out.println("write//comment성공");
 		
+		
+		
+
 		String encodedParam = URLEncoder.encode(commentCmd.getQuery(), "UTF-8");
-		System.out.println("encodedParam.indexOf(0) : "+encodedParam);
-		
+		System.out.println("encodedParam.indexOf(0) : " + encodedParam);
+
 //		"redirect:/AppraisalPage/read/" + commentCmd.getIsbn() + "?query=" + encodedParam;
-		
-		return "redirect:/AppraisalPage/read/" + commentCmd.getIsbn() + "?query=" + encodedParam; 
+
+		return "redirect:/AppraisalPage/read/" + commentCmd.getIsbn() + "?query=" + encodedParam;
 	}
+
+//	@PostMapping(value = "/read/{isbn}")
+//	public String insertBookShelf(@ModelAttribute("appraisal") CommentCmd commentCmd, @ModelAttribute("optionCmd") OptionCmd optionCmd) throws UnsupportedEncodingException {
+//		MemberVO member = new MemberVO();
+//		Long mem_num = (long) 1; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+//		member.setMem_num(mem_num);
+//
+//		BookShelfVO bookShelf = new BookShelfVO();
+//
+//		bookShelf.setBook_status(optionCmd.getOption());
+//		System.out.println("보관함에 들어갈 독서상태 : " + bookShelf.getBook_status());
+//
+//		bookShelf.setMem_num(member.getMem_num());
+//		System.out.println("보관함에 들어갈 이평가작성한 회원번호 : " + bookShelf.getMem_num());
+//
+//		bookShelf.setIsbn(commentCmd.getIsbn());
+//		System.out.println("보관함에 들어갈 ISBN : " + bookShelf.getIsbn());
+//		appraisalService.insertBookShelf(bookShelf);
+//		System.out.println("insertBookShelf성공");
+//
+//		
+//		String encodedParam = URLEncoder.encode(commentCmd.getQuery(), "UTF-8");
+//		System.out.println("encodedParam.indexOf(0) : " + encodedParam);
+//
+//		
+//		System.out.println("insertBookShelf성공");
+//		return "redirect:/AppraisalPage/read/" + commentCmd.getIsbn() + "?query=" + encodedParam;
+//	}
 	
-	//메인 페이지
+	
+	// 메인 페이지
 //	@RequestMapping(value="/list", produces = "application/json")
 //	public String jsonPasing()throws Exception {
 //	
@@ -175,11 +225,11 @@ public class AppraisalController {
 //				e.printStackTrace();
 //			}
 
-			/**
-			 *  JSON 데이터 파싱하기
-			 */
-			// JSONParser에 입력 스트림에 담은 JSON데이터(sb.toString())를 넣어 파싱한 다음 JSONObject로 반환한다.
-			
+	/**
+	 * JSON 데이터 파싱하기
+	 */
+	// JSONParser에 입력 스트림에 담은 JSON데이터(sb.toString())를 넣어 파싱한 다음 JSONObject로 반환한다.
+
 //				result = (JSONObject) new JSONParser().parse(sb.toString());
 //				
 //
