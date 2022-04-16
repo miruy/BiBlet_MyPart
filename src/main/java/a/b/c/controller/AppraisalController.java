@@ -39,7 +39,14 @@ public class AppraisalController {
 
 	// 모든 도서 정보 불러오기
 	@GetMapping(value = "/list")
-	public String findAllBook() {
+	public String findAllBook(
+			@RequestParam(value = "query", required = false) String query, 
+			Model model) {
+		
+		if (query != null) {
+			model.addAttribute("query", query);
+		}
+		
 		return "bookInfoList";
 	}
 

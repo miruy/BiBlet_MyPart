@@ -11,8 +11,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> 
 </head>
 <body>
-
-		
+	<form method="get" action="../list">
 			<p>
 			검색 키워드 입력 : 
 			<select name="keyword">
@@ -24,8 +23,7 @@
 			<input type="text" name="query" id="query" value="${query}" placeholder="제목, 저자 또는 출판사 검색" size=30> 
 			<button id="search">검색</button>
  			</p>
- 			
-	 
+	 </form>
 		 <div id="bookInfo">
 		 
 		 </div>
@@ -39,7 +37,7 @@
 			<option value=1>보는 중</option>
 			<option value=2>독서 완료</option>
 		</select>
-			* 평가 작성은 독서 완료 시 가능합니다.
+		* 평가 작성은 독서 완료 시 가능합니다.
 		
 		
 		<table border="1">
@@ -82,7 +80,7 @@
 				</td>
 				</tr>
 		</table>
-		<input type="submit" value="도서 평가 등록">
+		<input type="submit" value="도서 평가 등록" id="search">
 	</form>
 	
 	<br>
@@ -115,14 +113,15 @@
 // 		도서 검색 버튼 클릭 시 도서 데이터 요청
 	   	 $(document).ready(function () {
 	        var pageNum = 1;
-	        $("#search").click(function () {	//검색 버튼 클릭시 ajax실행
+	        
+	       $("#search").click(function () {	//검색 버튼 클릭시 ajax실행
 	        	$.ajax({	//카카오 검색요청 / [요청]
 	                method: "GET",
 	                url: "https://dapi.kakao.com/v3/search/book",
 	                data: { query: $("#query").val(), page: pageNum},
 	                headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
 	            })
-	            
+	           
 	            .done(function (msg) {	//검색 결과 담기 / [응답]
 	            	console.log(msg);
 	                for (var i = 0; i < 10; i++){
@@ -134,11 +133,12 @@
 	                	$("div").append("<strong>일련번호:</strong>" + msg.documents[i].isbn + "<br>");	//일련번호
 	                }
 	            });
-	        })
-	     
-    
+	        }) 
+	        
+	        
+	  		
 //     	상세페이지 실행하자마자 도서 데이터 요청
-            var pageNum = 1;
+             var pageNum = 1;
             	$.ajax({	//카카오 검색요청 / [요청]
                     method: "GET",
                     url: "https://dapi.kakao.com/v3/search/book",
@@ -156,8 +156,11 @@
                         $("#bookInfo").append("<strong>제작년도:</strong> " + msg.documents[0].datetime.slice(0,10) + "<br>");		//일련번호
                         $("#bookInfo").append("<strong>ISBN:</strong> " + msg.documents[0].isbn.slice(0,10) + "<br>");		//일련번호
                         $("#isbn").val(msg.documents[0].isbn.slice(0,10));
-                });      
-      		  })    
+                });   
+            	
+            	$("#query").off();
+            	
+      		  })  
  	 </script>
 
 </body>
