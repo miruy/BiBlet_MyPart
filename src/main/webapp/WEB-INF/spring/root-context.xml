@@ -55,22 +55,10 @@
 		</property>
 	</bean>
 
-
 	<bean id="sqlSessionTemplate"
 		class="org.mybatis.spring.SqlSessionTemplate"
 		destroy-method="clearCache">
 		<constructor-arg name="sqlSessionFactory"
 			ref="sqlSessionFactory"></constructor-arg>
 	</bean>
-
-	<!-- DAO, Service객체 생성 태그 추가하기 -->
-
-	<bean id="appraisalDAO" class="a.b.c.repository.AppraisalDAOImpl">
-		<constructor-arg ref="sqlSessionTemplate"></constructor-arg>
-	</bean>
-
-	<bean id="appraisalService" class="a.b.c.service.AppraisalServiceImpl">
-		<property name="appraisalDAO" ref="appraisalDAO"></property>
-	</bean>
-
 </beans>

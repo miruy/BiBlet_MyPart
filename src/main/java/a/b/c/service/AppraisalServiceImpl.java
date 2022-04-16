@@ -11,36 +11,19 @@ import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
 import a.b.c.model.allCommentByBookCmd;
 import a.b.c.repository.AppraisalDAO;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AppraisalServiceImpl implements AppraisalService {
 
-	private AppraisalDAO appraisalDAO;
+	private final AppraisalDAO appraisalDAO;
 	
-	// appraisalDAOsetter
-	@Autowired
-	public void setAppraisalDAO(AppraisalDAO appraisalDAO) {
-		this.appraisalDAO = appraisalDAO;
-	}
-
-	// 도서 전체 목록
-//	@Override
-//	public List<BookInfoVO> findAllBook() {
-//		return appraisalDAO.findAllBook();
-//	}
-
-	// 도서 상세보기
-//	@Override
-//	public BookInfoVO bookDetail(String isbn) {
-//		return appraisalDAO.bookDetail(isbn);
-//	}
-
 	//평가(코멘트) 작성
 	@Override
 	public void writeComment(AppraisalVO appraisal) {
 		appraisalDAO.writeComment(appraisal);
 	}
-	
 	
 	//해당 도서의 대한 모든 평가 불러오기
 	@Override
