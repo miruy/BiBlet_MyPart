@@ -27,8 +27,8 @@ public class BookShelfVO {
 		return book_status;
 	}
 
-	public void setBook_status(int book_status) {
-		this.book_status = book_status;
+	public void setBook_status(int i) {
+		this.book_status = i;
 	}
 
 	public Long getMem_num() {

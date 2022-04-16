@@ -2,7 +2,9 @@ package a.b.c.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,6 @@ import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
 import a.b.c.model.CommentCmd;
 import a.b.c.model.MemberVO;
-import a.b.c.model.OptionCmd;
 import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 
@@ -64,15 +65,15 @@ public class AppraisalController {
 		// 해당 도서의 대한 모든 평가 불러오기
 		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
 		System.out.println("모든 평가 불러올 isbn: " + isbn);
-
-		for (allCommentByBookCmd test : commentsByMembers) {
-			logger.debug("mem_id:" + test.getMem_id());
-			logger.debug("mem_pic:" + test.getMem_pic());
-			logger.debug("star:" + Integer.toString(test.getStar()));
-			logger.debug("book_comment:" + test.getBook_comment());
-			logger.debug("start_date:" + test.getStart_date());
-			logger.debug("end_date:" + test.getEnd_date());
-		}
+//
+//		for (allCommentByBookCmd test : commentsByMembers) {
+//			logger.debug("mem_id:" + test.getMem_id());
+//			logger.debug("mem_pic:" + test.getMem_pic());
+//			logger.debug("star:" + Integer.toString(test.getStar()));
+//			logger.debug("book_comment:" + test.getBook_comment());
+//			logger.debug("start_date:" + test.getStart_date());
+//			logger.debug("end_date:" + test.getEnd_date());
+//		}
 
 		model.addAttribute("commentsByMembers", commentsByMembers);
 
@@ -81,22 +82,24 @@ public class AppraisalController {
 
 	// 평가 작성(insert)
 	@PostMapping(value = "/read/{isbn}")
-	public String writeComment(@ModelAttribute("appraisal") CommentCmd commentCmd, @ModelAttribute("optionCmd") OptionCmd optionCmd, Model model)
+	public String writeComment(@ModelAttribute("appraisal") CommentCmd commentCmd, Model model)
 			throws UnsupportedEncodingException {
 
+		
 		AppraisalVO appraisal = new AppraisalVO();
 
 		//테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함 
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 10; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 12; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 		
 		
-		
+		System.out.println("option : " + commentCmd.getOption());
 		
 		BookShelfVO bookShelf = new BookShelfVO();
-
-		bookShelf.setBook_status(optionCmd.getOption());	//테스트용
+		
+		
+		bookShelf.setBook_status(commentCmd.getOption());	//테스트용
 		System.out.println("보관함에 들어갈 독서상태 : " + bookShelf.getBook_status());
 
 		bookShelf.setMem_num(member.getMem_num());
@@ -106,7 +109,9 @@ public class AppraisalController {
 		System.out.println("보관함에 들어갈 ISBN : " + bookShelf.getIsbn());
 		
 
-		appraisalService.insertBookShelf(bookShelf);
+		bookShelf = appraisalService.insertBookShelf(bookShelf);
+		
+		
 		
 		System.out.println("insertBookShelf성공");
 		
@@ -126,18 +131,20 @@ public class AppraisalController {
 
 		appraisal.setEnd_date(commentCmd.getEnd_date());
 		System.out.println("다읽은날짜 : " + commentCmd.getEnd_date());
-
+                  
 		appraisal.setCo_prv(commentCmd.getCo_prv());
 		System.out.println("공개여부 : " + commentCmd.getCo_prv());
 
+		
 		appraisal.setBook_status_num(bookShelf.getBook_status_num());
-		System.out.println(bookShelf.getBook_status_num());
+		System.out.println("bookShelf.getBook_status_num() : " + bookShelf.getBook_status_num());
+		
 		System.out.println("독성상태 : " + appraisal.getBook_status_num());
 
 		System.out.println("isbn : " + commentCmd.getIsbn());
 
 		System.out.println("query : " + commentCmd.getQuery());
-
+		
 		appraisalService.writeComment(appraisal);
 		System.out.println("write//comment성공");
 		

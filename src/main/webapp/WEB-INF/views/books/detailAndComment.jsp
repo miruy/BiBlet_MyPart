@@ -30,19 +30,18 @@
 		 
 		 </div>
 	
-
-	<form method="post" commandName="optionCmd">
-		<select name="option" id="option">
+	
+	<form method="post" commandName="appraisal">
+		독서 상태 : 
+		<select name="option">
+			<option value="none">=== 선택 ===</option>
 			<option value=0>찜</option>
 			<option value=1>보는 중</option>
 			<option value=2>독서 완료</option>
 		</select>
-<!-- 		<input type="submit" value="독서 상태 입력"> -->
-	</form>
-
-	
-
-	<form method="post" commandName="appraisal">
+			* 평가 작성은 독서 완료 시 가능합니다.
+		
+		
 		<table border="1">
 			<tr>
 				<th>별점</th>

@@ -1,6 +1,8 @@
 package a.b.c.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,8 +50,8 @@ public class AppraisalServiceImpl implements AppraisalService {
 	
 	//평가 작성 시 도서isbn과 상태(독서완료) 저장
 	@Override
-	public void insertBookShelf(BookShelfVO bookShelf) {
-		appraisalDAO.insertBookShelf(bookShelf);
+	public BookShelfVO insertBookShelf(BookShelfVO bookShelf) {
+		return appraisalDAO.insertBookShelf(bookShelf);
 	}
 	
 	//해당 도서의 대한 평가 갯수
