@@ -97,7 +97,6 @@ public class AppraisalController {
 	private String writeComment(CommentCmd commentCmd, Long mem_num) {
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
-		MemberVO member = new MemberVO();
 		
 		bookShelf.setBook_status(commentCmd.getOption());
 		bookShelf.setMem_num(mem_num);
@@ -120,14 +119,7 @@ public class AppraisalController {
 	 * 평가 삭제
 	 */
 	public String deleteComment(@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, Long mem_num) throws UnsupportedEncodingException {
-
-		System.out.println("여기는 delete");
-		System.out.println("isbn:" + deleteCmd.getIsbn());
-		System.out.println("appraisal_num:" + deleteCmd.getAppraisal_num());
-		System.out.println("query:" + deleteCmd.getQuery());
-
 		BookShelfVO bookShelf = new BookShelfVO();
-		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 
 		bookShelf.setIsbn(deleteCmd.getIsbn());
 		bookShelf.setMem_num(mem_num);
