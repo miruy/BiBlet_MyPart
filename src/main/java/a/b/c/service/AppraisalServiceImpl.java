@@ -42,6 +42,10 @@ public class AppraisalServiceImpl implements AppraisalService {
 	public int commentCount(String isbn) {
 		return appraisalDAO.commentCount(isbn);
 	}
+	@Override
+	public void deleteComment(BookShelfVO bookShelf) {
+		appraisalDAO.deleteComment(bookShelf);
+	}
 }
 
 

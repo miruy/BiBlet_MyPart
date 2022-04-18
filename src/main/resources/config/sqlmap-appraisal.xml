@@ -12,10 +12,6 @@
 	SELECT * FROM bookshelf WHERE isbn=#{isbn} AND mem_num=#{mem_num} AND bookshelf.book_status = 2
 	</select>
 	
-<!-- 	<select id="select"> -->
-<!-- 	SELECT book_status_num from bookshelf WHERE bookshelf.mem_num = #{mem_num} AND bookshelf.book_status = 2 -->
-<!-- 	</select> -->
-	
 	<insert id="writeComment" parameterType="appraisal">
 	INSERT INTO appraisal(appraisal_num, star, book_comment, start_date, end_date, co_prv, book_status_num)
 	 VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv}, #{book_status_num})
@@ -46,6 +42,11 @@
     INNER JOIN appraisal ON bookshelf.book_status_num = appraisal.book_status_num
     WHERE bookshelf.isbn=#{isbn} AND appraisal.co_prv='공개'
 	</select>
+	
+	
+	<delete id="deleteComment">
+	DELETE FROM appraisal WHERE EXISTS (SELECT book_status_num FROM bookshelf WHERE mem_num=#{mem_num} AND isbn=#{isbn})
+	</delete>
 
 
 	<!-- <select id="search" parameterType="HashMap" resultType="book"> -->

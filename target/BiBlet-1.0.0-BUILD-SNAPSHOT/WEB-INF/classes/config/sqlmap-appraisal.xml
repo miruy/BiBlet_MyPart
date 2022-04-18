@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AppraisalDAO">
+	
+	<insert id="insertBookShelf" parameterType="bookShelf">
+	INSERT INTO bookshelf(book_status_num, book_status, mem_num, isbn) VALUES(bookshelf_SEQ.nextval, #{book_status}, #{mem_num}, #{isbn})
+	</insert>
+	
+	<select id="selectBookShelf" parameterType="bookShelf" resultType="bookShelf">
+	SELECT * FROM bookshelf WHERE isbn=#{isbn} AND mem_num=#{mem_num} AND bookshelf.book_status = 2
+	</select>
+	
+<!-- 	<select id="select"> -->
+<!-- 	SELECT book_status_num from bookshelf WHERE bookshelf.mem_num = #{mem_num} AND bookshelf.book_status = 2 -->
+<!-- 	</select> -->
+	
+	<insert id="writeComment" parameterType="appraisal">
+	INSERT INTO appraisal(appraisal_num, star, book_comment, start_date, end_date, co_prv, book_status_num)
+	 VALUES(appraisal_SEQ.nextval, #{star}, #{book_comment}, #{start_date}, #{end_date}, #{co_prv}, #{book_status_num})
+	</insert>
+	
+	
+	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd">
+<!--     MEMBER,APPRAISAL 조인     -->
+	SELECT 
+	 appraisal.appraisal_num,
+ 	 appraisal.star,
+ 	 appraisal.book_comment,
+ 	 appraisal.start_date,
+ 	 appraisal.end_date,
+ 	 member.mem_id,
+ 	 member.mem_pic
+	FROM bookshelf
+	INNER JOIN appraisal ON bookshelf.book_status_num = appraisal.book_status_num
+	INNER JOIN member ON bookshelf.mem_num = member.mem_num
+	WHERE bookshelf.isbn=#{isbn} AND appraisal.co_prv='공개'
+	</select>
+	
+	
+	<select id="commentCount" parameterType="String" resultType="Integer">
+	SELECT 
+	 COUNT(appraisal.book_comment)
+    FROM bookshelf
+    INNER JOIN appraisal ON bookshelf.book_status_num = appraisal.book_status_num
+    WHERE bookshelf.isbn=#{isbn} AND appraisal.co_prv='공개'
+	</select>
+
+
+	<!-- <select id="search" parameterType="HashMap" resultType="book"> -->
+	<!-- <if test="option == 'bookname'"> -->
+	<!-- SELECT * FROM book WHERE bookname LIKE '%'||#{keyword}||'%' -->
+	<!-- </if> -->
+	<!-- <if test="option == 'author'"> -->
+	<!-- SELECT * FROM book WHERE author LIKE '%'||#{keyword}||'%' -->
+	<!-- </if> -->
+	<!-- <if test="option == 'pubcompany'"> -->
+	<!-- SELECT * FROM book WHERE pubcompany LIKE '%'||#{keyword}||'%' -->
+	<!-- </if> -->
+	<!-- </select> -->
+
+	<!-- <select id="findByIsbn" parameterType="String" resultType="book"> -->
+	<!-- SELECT * FROM book WHERE isbn=#{isbn} -->
+	<!-- </select> -->
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
