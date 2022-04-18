@@ -44,9 +44,17 @@
 	</select>
 	
 	
-	<delete id="deleteComment">
+	<delete id="deleteComment" parameterType="bookShelf">
 	DELETE FROM appraisal WHERE EXISTS (SELECT book_status_num FROM bookshelf WHERE mem_num=#{mem_num} AND isbn=#{isbn})
 	</delete>
+	
+<!-- 	<update id="updateComment" parameterType="updateCmd"> -->
+<!-- 	UPDATE appraisal SET -->
+<!-- 	STAR= #{star}, BOOK_COMMENT=#{book_comment}, START_DATE=#{start_date}, END_DATE=#{end_date}, CO_PRV=#{co_prv} -->
+<!-- 	WHERE book_status_num= -->
+<!-- 	(SELECT book_status_num FROM bookshelf WHERE mem_num=#{mem_num} AND isbn=#{isbn}) -->
+	
+<!-- 	</update> -->
 
 
 	<!-- <select id="search" parameterType="HashMap" resultType="book"> -->

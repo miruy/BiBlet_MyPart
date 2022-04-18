@@ -59,4 +59,9 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 	public void deleteComment(BookShelfVO bookShelf) {
 		sqlSessionTemplate.delete("deleteComment", bookShelf);
 	}
+	
+	@Override
+	public void updateComment(BookShelfVO bookShelf) {
+		sqlSessionTemplate.update("updateComment", bookShelf);
+	}
 }

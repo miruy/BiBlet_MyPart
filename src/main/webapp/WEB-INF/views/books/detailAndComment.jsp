@@ -66,7 +66,7 @@
 
 	<br>
 	
-	<form method="post" action="/read?actionFlag=2" commandName="deleteCmd">
+	<form method="post"  commandName="updateAndDeleteCmd">
 	<c:if test="${!empty commentsByMembers}">
 		<c:forEach var="commentsByMember" items="${commentsByMembers}">
 			<p>
@@ -80,8 +80,8 @@
 			
 			<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
 			<input type="hidden" name="query" id="query" value="${query}" /> 
-			<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
-			<input type="submit" value="삭제">
+			<input type="submit" value="삭제" formaction="/read?actionFlag=2">
+			<input type="submit" value="수정" formaction="/read?actionFlag=3">
 			</p>
 		</c:forEach>
 	</c:if>

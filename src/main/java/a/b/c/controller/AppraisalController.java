@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
 import a.b.c.model.CommentCmd;
-import a.b.c.model.DeleteCmd;
 import a.b.c.model.MemberVO;
+import a.b.c.model.UpdateAndDeleteCmd;
 import a.b.c.model.allCommentByBookCmd;
 import a.b.c.service.AppraisalService;
 import lombok.RequiredArgsConstructor;
@@ -66,10 +66,9 @@ public class AppraisalController {
 	/**
 	 * 도서 상세보기
 	 */
-	@SuppressWarnings("unused")
 	@PostMapping("/read")
 	public String writeComment(int actionFlag, @ModelAttribute("appraisal") CommentCmd commentCmd,
-			@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, Model model) throws UnsupportedEncodingException {
+			@ModelAttribute("updateAndDeleteCmd") UpdateAndDeleteCmd updateAndDeleteCmd, Model model) throws UnsupportedEncodingException {
 		System.out.println("actionFlag:" + actionFlag);
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
@@ -77,14 +76,16 @@ public class AppraisalController {
 
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 12; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 14; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
 		String redirectUrl = "";
 		if(actionFlag == 1) {
 			redirectUrl = writeComment(commentCmd, mem_num) + encodedParam;
 		}else if(actionFlag == 2) {
-			redirectUrl = deleteComment(deleteCmd, mem_num) + encodedParam;
+			redirectUrl = deleteComment(updateAndDeleteCmd, mem_num) + encodedParam;
+		}else if(actionFlag == 3) {
+			redirectUrl = updateComment(updateAndDeleteCmd, mem_num) + encodedParam;
 		}
 
 		return redirectUrl;
@@ -114,20 +115,33 @@ public class AppraisalController {
 		
 		return "redirect:/read/" + commentCmd.getIsbn() + "?query=";
 	}
+	
+	/**
+	 * 평가 수정
+	 */
+	public String updateComment(@ModelAttribute("updateAndDeleteCmd") UpdateAndDeleteCmd updateAndDeleteCmd, Long mem_num) {
+		BookShelfVO bookShelf = new BookShelfVO();
+
+		bookShelf.setIsbn(updateAndDeleteCmd.getIsbn());
+		bookShelf.setMem_num(mem_num);
+
+		appraisalService.updateComment(bookShelf);
+		System.out.println("평가 수정 성공");
+		return "redirect:/read/" + updateAndDeleteCmd.getIsbn() + "?query=";
+	}
 
 	/**
 	 * 평가 삭제
 	 */
-	public String deleteComment(@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, Long mem_num) throws UnsupportedEncodingException {
+	public String deleteComment(@ModelAttribute("updateAndDeleteCmd") UpdateAndDeleteCmd updateAndDeleteCmd, Long mem_num) throws UnsupportedEncodingException {
 		BookShelfVO bookShelf = new BookShelfVO();
 
-		bookShelf.setIsbn(deleteCmd.getIsbn());
+		bookShelf.setIsbn(updateAndDeleteCmd.getIsbn());
 		bookShelf.setMem_num(mem_num);
 
 		appraisalService.deleteComment(bookShelf);
-		System.out.println("평가 삭제 성공");
 		
-		return "redirect:/read/" + deleteCmd.getIsbn() + "?query=";
+		return "redirect:/read/" + updateAndDeleteCmd.getIsbn() + "?query=";
 	}
 
 }

@@ -12,5 +12,5 @@ public interface AppraisalService {
 	List<allCommentByBookCmd> findAllComment(String isbn); //해당 도서의 대한 모든 평가 불러오기
 	int commentCount(String isbn); 	//해당 도서의 대한 평가 갯수
 	void deleteComment(BookShelfVO bookShelf);	//평가 삭제 
-										//평가 수정
+	void updateComment(BookShelfVO bookShelf); //평가 수정
 }

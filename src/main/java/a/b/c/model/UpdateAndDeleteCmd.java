@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCmd {
+public class UpdateAndDeleteCmd {
 private String isbn;
 private String query;
-private Long appraisal_num;
 }

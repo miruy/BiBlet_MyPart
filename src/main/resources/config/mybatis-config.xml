@@ -15,5 +15,6 @@
 		<typeAlias alias="appraisal" type="a.b.c.model.AppraisalVO"/>
 		<typeAlias alias="bookShelf" type="a.b.c.model.BookShelfVO"/>
 		<typeAlias alias="allCommentByBookCmd" type="a.b.c.model.allCommentByBookCmd"/>
+<!-- 		<typeAlias alias="updateCmd" type="a.b.c.model.allCommentByBookCmd"/> -->
 	</typeAliases>
 </configuration>
