@@ -17,7 +17,8 @@ import a.b.c.model.BookShelfVO;
 import a.b.c.model.CommentCmd;
 import a.b.c.model.MemberVO;
 import a.b.c.model.UpdateAndDeleteCmd;
-import a.b.c.model.allCommentByBookCmd;
+import a.b.c.model.allCommentByBookVO;
+import a.b.c.model.updateCommentVO;
 import a.b.c.service.AppraisalService;
 import lombok.RequiredArgsConstructor;
 
@@ -51,7 +52,7 @@ public class AppraisalController {
 		int commentCount = appraisalService.commentCount(isbn);
 
 		// 해당 도서의 대한 모든 평가 불러오기
-		List<allCommentByBookCmd> commentsByMembers = appraisalService.findAllComment(isbn);
+		List<allCommentByBookVO> commentsByMembers = appraisalService.findAllComment(isbn);
 
 		model.addAttribute("query", query.split(",")[0]);
 		model.addAttribute("commentCount", commentCount);
@@ -74,9 +75,12 @@ public class AppraisalController {
 		BookShelfVO bookShelf = new BookShelfVO();
 		String encodedParam = URLEncoder.encode(commentCmd.getQuery(), "UTF-8");
 
+		updateAndDeleteCmd.setIsbn(updateAndDeleteCmd.getIsbn().substring(0,10));
+		System.out.println("isbn 10글자 자른 : "+updateAndDeleteCmd.getIsbn());
+		
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 14; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 15; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
 		String redirectUrl = "";
@@ -120,12 +124,19 @@ public class AppraisalController {
 	 * 평가 수정
 	 */
 	public String updateComment(@ModelAttribute("updateAndDeleteCmd") UpdateAndDeleteCmd updateAndDeleteCmd, Long mem_num) {
-		BookShelfVO bookShelf = new BookShelfVO();
+		updateCommentVO updateAppraisal = new updateCommentVO();
+		
+		updateAppraisal.setMem_num(mem_num);
+		updateAppraisal.setIsbn(updateAndDeleteCmd.getIsbn());
+		updateAppraisal.setAppraisal_num(updateAndDeleteCmd.getAppraisal_num());
+		System.out.println("뷰에서 가져온 평가번호"+updateAppraisal.getAppraisal_num());
+		updateAppraisal.setStar(updateAndDeleteCmd.getStar());
+		updateAppraisal.setBook_comment(updateAndDeleteCmd.getBook_comment());
+		updateAppraisal.setStart_date(updateAndDeleteCmd.getStart_date());
+		updateAppraisal.setEnd_date(updateAndDeleteCmd.getEnd_date());
+		updateAppraisal.setCo_prv(updateAndDeleteCmd.getCo_prv());
 
-		bookShelf.setIsbn(updateAndDeleteCmd.getIsbn());
-		bookShelf.setMem_num(mem_num);
-
-		appraisalService.updateComment(bookShelf);
+		appraisalService.updateComment(updateAppraisal);
 		System.out.println("평가 수정 성공");
 		return "redirect:/read/" + updateAndDeleteCmd.getIsbn() + "?query=";
 	}

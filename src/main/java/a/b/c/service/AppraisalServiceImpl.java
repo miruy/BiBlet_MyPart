@@ -1,15 +1,13 @@
 package a.b.c.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
-import a.b.c.model.allCommentByBookCmd;
+import a.b.c.model.allCommentByBookVO;
+import a.b.c.model.updateCommentVO;
 import a.b.c.repository.AppraisalDAO;
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +25,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 	
 	//해당 도서의 대한 모든 평가 불러오기
 	@Override
-	public List<allCommentByBookCmd> findAllComment(String isbn) {
+	public List<allCommentByBookVO> findAllComment(String isbn) {
 		return appraisalDAO.findAllComment(isbn);
 	}
 	
@@ -35,6 +33,11 @@ public class AppraisalServiceImpl implements AppraisalService {
 	@Override
 	public BookShelfVO insertBookShelf(BookShelfVO bookShelf) {
 		return appraisalDAO.insertBookShelf(bookShelf);
+	}
+	
+	@Override
+	public BookShelfVO selectBookShelf(BookShelfVO bookShelf) {
+		return appraisalDAO.selectBookShelf(bookShelf);
 	}
 	
 	//해당 도서의 대한 평가 갯수
@@ -49,8 +52,8 @@ public class AppraisalServiceImpl implements AppraisalService {
 	}
 	
 	@Override
-	public void updateComment(BookShelfVO bookShelf) {
-		appraisalDAO.updateComment(bookShelf);
+	public void updateComment(updateCommentVO updateAppraisal) {
+		appraisalDAO.updateComment(updateAppraisal);
 	}
 }
 

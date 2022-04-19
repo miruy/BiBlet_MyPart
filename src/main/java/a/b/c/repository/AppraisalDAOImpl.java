@@ -1,18 +1,14 @@
 package a.b.c.repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
-import a.b.c.model.allCommentByBookCmd;
+import a.b.c.model.allCommentByBookVO;
+import a.b.c.model.updateCommentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +40,7 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 
 	//해당 도서의 대한 모든 평가 불러오기
 	@Override
-	public List<allCommentByBookCmd> findAllComment(String isbn) {
+	public List<allCommentByBookVO> findAllComment(String isbn) {
 		return sqlSessionTemplate.selectList("findAllComment", isbn);
 	}
 
@@ -61,7 +57,7 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 	}
 	
 	@Override
-	public void updateComment(BookShelfVO bookShelf) {
-		sqlSessionTemplate.update("updateComment", bookShelf);
+	public void updateComment(updateCommentVO updateAppraisal) {
+		sqlSessionTemplate.update("updateComment", updateAppraisal);
 	}
 }

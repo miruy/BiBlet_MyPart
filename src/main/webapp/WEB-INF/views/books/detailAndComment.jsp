@@ -8,9 +8,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BiBlet 도서 상세/평가</title>
-<script src="https://code.jquery.com/jquery-3.6.0.js"
-	integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
 	<form method="get" action="../list">
@@ -24,68 +22,108 @@
 			<button id="search">검색</button>
 		</p>
 	</form>
+	
 	<div id="bookInfo"></div>
 
 
 	<form method="post" action="/read?actionFlag=1" commandName="appraisal">
-		독서 상태 : <select name="option">
-			<option value="none">=== 선택 ===</option>
-			<option value=0>찜</option>
-			<option value=1>보는 중</option>
-			<option value=2>독서 완료</option>
-		</select> * 평가 작성은 독서 완료 시 가능합니다. 별점
-		<div class="star-rating space-x-4 mx-auto">
-			<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울
-			예정) <input type="radio" id="2star" name="star" value=4
-				v-model="ratings" />2점(지울 예정) <input type="radio" id="3star"
-				name="star" value=3 v-model="ratings" />3점(지울 예정) <input
-				type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울
-			예정) <input type="radio" id="5star" name="star" value=1
-				v-model="ratings" />5점(지울 예정)
-		</div>
+		<p>
+			독서 상태 : <select name="option">
+				<option value="none">=== 선택 ===</option>
+				<option value=0>찜</option>
+				<option value=1>보는 중</option>
+				<option value=2>독서 완료</option>
+			</select> * 평가 작성은 독서 완료 시 가능합니다. 
+		</p>
+		
+		
+			별점 : 
+			<div class="star-rating space-x-4 mx-auto">
+				<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
+				<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
+				<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
+				<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
+				<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
+			</div>
+		
+		
+		<p>
+			평가 : <textarea name="book_comment"></textarea>
+		</p>
 
-		평가
-		<textarea name="book_comment"></textarea>
 
-
-
-		구독 시작 날짜 <input type="date" name="start_date" /> 구독 완료 날짜 <input
-			type="date" name="end_date" /> 평가 공개 여부 <input type="checkbox"
-			name="co_prv" value="공개" />공개 <input type="checkbox" name="co_prv"
-			value="비공개" />비공개 <input type="hidden" name="isbn" id="isbn"
-			value="${isbn}" /> <input type="hidden" name="query" id="query"
-			value="${query}" /> 
+			구독 시작 날짜 : <input type="date" name="start_date" /> 
+			구독 완료 날짜 : <input type="date" name="end_date" />
+			공개 : <input type="checkbox" name="co_prv" value="공개" />
+			비공개 : <input type="checkbox" name="co_prv" value="비공개" />
+			<input type="hidden" name="isbn" id="isbn" value="${isbn}" />
+			<input type="hidden" name="query" id="query" value="${query}" /> 
 			<input type="submit" value="도서 평가 등록">
 	</form>
 
-	<br>
-
-	<c:if test="${!empty commentCount}">
-		평가 총 개수 : ${commentCount}	
-	</c:if>
-
-	<br>
+	
+	<p>
+		<c:if test="${!empty commentCount}">
+			평가 총 개수 : ${commentCount}	
+		</c:if>
+	</p>
 	
 	<form method="post"  commandName="updateAndDeleteCmd">
-	<c:if test="${!empty commentsByMembers}">
-		<c:forEach var="commentsByMember" items="${commentsByMembers}">
-			<p>
-			평가 번호 : ${commentsByMember.appraisal_num} 
-			회원 : ${commentsByMember.mem_id} 
-			프로필 : ${commentsByMember.mem_pic} 
-			별점 : ${commentsByMember.star} 
-			시작날짜 : ${commentsByMember.start_date} 
-			다 읽은 날짜 : ${commentsByMember.end_date} 
-			평가 : ${commentsByMember.book_comment}
-			
-			<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
-			<input type="hidden" name="query" id="query" value="${query}" /> 
-			<input type="submit" value="삭제" formaction="/read?actionFlag=2">
-			<input type="submit" value="수정" formaction="/read?actionFlag=3">
-			</p>
-		</c:forEach>
-	</c:if>
-</form>
+		<c:if test="${!empty commentsByMembers}">
+			<c:forEach var="commentsByMember" items="${commentsByMembers}">
+				<p>
+					평가 번호 : ${commentsByMember.appraisal_num} 
+					회원 : ${commentsByMember.mem_id} 
+					프로필 : ${commentsByMember.mem_pic} 
+					별점 : ${commentsByMember.star} 
+					시작날짜 : ${commentsByMember.start_date} 
+					다 읽은 날짜 : ${commentsByMember.end_date} 
+					평가 : ${commentsByMember.book_comment}
+					
+					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
+					<input type="hidden" name="query" id="query" value="${query}" /> 
+					<input type="submit" value="삭제" formaction="/read?actionFlag=2">
+					<input type='button' value='수정' onclick='updateComment()'/>
+				</p>
+			</c:forEach>
+		</c:if>
+	</form>
+	
+	<form method="post">
+		<script>
+				function updateComment() {
+					 $("#updateForm").show();
+				} 
+			</script>
+				<div id="updateForm" style="display:none;">
+					독서 상태 : 
+					<select name="option">
+						<option value="none">=== 선택 ===</option>
+						<option value=0>찜</option>
+						<option value=1>보는 중</option>
+						<option value=2>독서 완료</option>
+					</select> * 평가 작성은 독서 완료 시 가능합니다. 
+					
+					별점 : 
+					<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
+					<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
+					<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
+					<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
+					<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
+		
+	
+					평가 : <textarea name="book_comment"></textarea>
+	
+					구독 시작 날짜 : <input type="date" name="start_date" /> 
+					구독 완료 날짜 : <input type="date" name="end_date" />
+					공개 : <input type="checkbox" name="co_prv" value="공개" />
+					비공개 : <input type="checkbox" name="co_prv" value="비공개" />
+					
+					<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
+					<input type="submit" value="저장" formaction="/read?actionFlag=3">
+				</div>	
+	</form>
+
 	<script>
 	
 // 		도서 검색 버튼 클릭 시 도서 데이터 요청

@@ -18,7 +18,7 @@
 	</insert>
 	
 	
-	<select id="findAllComment" parameterType="String" resultType="allCommentByBookCmd">
+	<select id="findAllComment" parameterType="String" resultType="allCommentByBook">
 <!--     MEMBER,APPRAISAL 조인     -->
 	SELECT 
 	 appraisal.appraisal_num,
@@ -48,13 +48,12 @@
 	DELETE FROM appraisal WHERE EXISTS (SELECT book_status_num FROM bookshelf WHERE mem_num=#{mem_num} AND isbn=#{isbn})
 	</delete>
 	
-<!-- 	<update id="updateComment" parameterType="updateCmd"> -->
-<!-- 	UPDATE appraisal SET -->
-<!-- 	STAR= #{star}, BOOK_COMMENT=#{book_comment}, START_DATE=#{start_date}, END_DATE=#{end_date}, CO_PRV=#{co_prv} -->
-<!-- 	WHERE book_status_num= -->
-<!-- 	(SELECT book_status_num FROM bookshelf WHERE mem_num=#{mem_num} AND isbn=#{isbn}) -->
-	
-<!-- 	</update> -->
+	<update id="updateComment" parameterType="updateAppraisal">
+	UPDATE appraisal SET
+	star=#{star}, book_comment=#{book_comment}, start_date=#{start_date}, end_date=#{end_date}, co_prv=#{co_prv}
+	WHERE appraisal_num=#{appraisal_num} AND book_status_num=
+	(SELECT book_status_num FROM bookshelf WHERE mem_num=#{mem_num} AND isbn=#{isbn})
+	</update>
 
 
 	<!-- <select id="search" parameterType="HashMap" resultType="book"> -->

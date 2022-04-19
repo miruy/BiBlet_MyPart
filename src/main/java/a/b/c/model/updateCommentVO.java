@@ -1,21 +1,21 @@
 package a.b.c.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor // 디폴트 생성자 생성
-@AllArgsConstructor // 오버로딩 생성자 생성
-public class allCommentByBookCmd {
-	private Long appraisal_num;	// 평가 번호
+@AllArgsConstructor
+@NoArgsConstructor
+public class updateCommentVO {
+	private String isbn;
+	private Long appraisal_num;
+	private Long mem_num;
 	private int star; // 별점
 	private String book_comment; // 코멘트(평가)
 	private String start_date; // 도서 구독 시작 날짜
 	private String end_date; // 도서 구독 완료 날짜
-	private String mem_id; // 회원 아이디
-	private String mem_pic; // 회원 프로필 사진
+	private String co_prv; // 코멘트 공개 여부
 }
