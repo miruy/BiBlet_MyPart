@@ -18,4 +18,5 @@ public class allCommentByBookVO {
 	private String end_date; // 도서 구독 완료 날짜
 	private String mem_id; // 회원 아이디
 	private String mem_pic; // 회원 프로필 사진
+	private Long book_status_num;
 }

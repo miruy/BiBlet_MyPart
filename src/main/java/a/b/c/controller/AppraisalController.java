@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
-import a.b.c.model.CommentCmd;
+import a.b.c.model.DeleteCmd;
+import a.b.c.model.InsertCmd;
 import a.b.c.model.MemberVO;
-import a.b.c.model.UpdateAndDeleteCmd;
+import a.b.c.model.UpdateCmd;
 import a.b.c.model.allCommentByBookVO;
-import a.b.c.model.updateCommentVO;
 import a.b.c.service.AppraisalService;
 import lombok.RequiredArgsConstructor;
 
@@ -68,28 +68,30 @@ public class AppraisalController {
 	 * 도서 상세보기
 	 */
 	@PostMapping("/read")
-	public String writeComment(int actionFlag, @ModelAttribute("appraisal") CommentCmd commentCmd,
-			@ModelAttribute("updateAndDeleteCmd") UpdateAndDeleteCmd updateAndDeleteCmd, Model model) throws UnsupportedEncodingException {
+	public String writeComment(int actionFlag, 
+			@ModelAttribute("insertCmd") InsertCmd insertCmd,
+			@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, 
+			@ModelAttribute("updateCmd") UpdateCmd updateCmd, Model model) throws UnsupportedEncodingException {
+		
 		System.out.println("actionFlag:" + actionFlag);
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
-		String encodedParam = URLEncoder.encode(commentCmd.getQuery(), "UTF-8");
-
-		updateAndDeleteCmd.setIsbn(updateAndDeleteCmd.getIsbn().substring(0,10));
-		System.out.println("isbn 10글자 자른 : "+updateAndDeleteCmd.getIsbn());
 		
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 15; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 16; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
 		String redirectUrl = "";
 		if(actionFlag == 1) {
-			redirectUrl = writeComment(commentCmd, mem_num) + encodedParam;
+			String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
+			redirectUrl = writeComment(insertCmd, mem_num) + encodedParam;
 		}else if(actionFlag == 2) {
-			redirectUrl = deleteComment(updateAndDeleteCmd, mem_num) + encodedParam;
+			String encodedParam = URLEncoder.encode(deleteCmd.getQuery(), "UTF-8");
+			redirectUrl = deleteComment(deleteCmd, mem_num) + encodedParam;
 		}else if(actionFlag == 3) {
-			redirectUrl = updateComment(updateAndDeleteCmd, mem_num) + encodedParam;
+			String encodedParam = URLEncoder.encode(updateCmd.getQuery(), "UTF-8");
+			redirectUrl = updateComment(updateCmd, mem_num) + encodedParam;
 		}
 
 		return redirectUrl;
@@ -99,60 +101,66 @@ public class AppraisalController {
 	/**
 	 * 평가 저장
 	 */
-	private String writeComment(CommentCmd commentCmd, Long mem_num) {
+	private String writeComment(InsertCmd insertCmd, Long mem_num) {
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
+		insertCmd.setIsbn(insertCmd.getIsbn().substring(0,10));
 		
-		bookShelf.setBook_status(commentCmd.getOption());
+		bookShelf.setBook_status(insertCmd.getOption());
 		bookShelf.setMem_num(mem_num);
-		bookShelf.setIsbn(commentCmd.getIsbn());
+		bookShelf.setIsbn(insertCmd.getIsbn());
 		bookShelf = appraisalService.insertBookShelf(bookShelf);
 
-		appraisal.setStar(commentCmd.getStar());
-		appraisal.setBook_comment(commentCmd.getBook_comment());
-		appraisal.setStart_date(commentCmd.getStart_date());
-		appraisal.setEnd_date(commentCmd.getEnd_date());
-		appraisal.setCo_prv(commentCmd.getCo_prv());
+		appraisal.setStar(insertCmd.getStar());
+		appraisal.setBook_comment(insertCmd.getBook_comment());
+		appraisal.setStart_date(insertCmd.getStart_date());
+		appraisal.setEnd_date(insertCmd.getEnd_date());
+		appraisal.setCo_prv(insertCmd.getCo_prv());
 		appraisal.setBook_status_num(bookShelf.getBook_status_num());
 
 		appraisalService.writeComment(appraisal);
 		
-		return "redirect:/read/" + commentCmd.getIsbn() + "?query=";
+		return "redirect:/read/" + insertCmd.getIsbn() + "?query=";
 	}
 	
 	/**
 	 * 평가 수정
 	 */
-	public String updateComment(@ModelAttribute("updateAndDeleteCmd") UpdateAndDeleteCmd updateAndDeleteCmd, Long mem_num) {
-		updateCommentVO updateAppraisal = new updateCommentVO();
+	public String updateComment(@ModelAttribute("updateCmd") UpdateCmd updateCmd, Long mem_num) {
+		UpdateCmd updateAppraisal = new UpdateCmd();
+		updateCmd.setIsbn(updateCmd.getIsbn().substring(0,10));
 		
 		updateAppraisal.setMem_num(mem_num);
-		updateAppraisal.setIsbn(updateAndDeleteCmd.getIsbn());
-		updateAppraisal.setAppraisal_num(updateAndDeleteCmd.getAppraisal_num());
-		System.out.println("뷰에서 가져온 평가번호"+updateAppraisal.getAppraisal_num());
-		updateAppraisal.setStar(updateAndDeleteCmd.getStar());
-		updateAppraisal.setBook_comment(updateAndDeleteCmd.getBook_comment());
-		updateAppraisal.setStart_date(updateAndDeleteCmd.getStart_date());
-		updateAppraisal.setEnd_date(updateAndDeleteCmd.getEnd_date());
-		updateAppraisal.setCo_prv(updateAndDeleteCmd.getCo_prv());
-
+		updateAppraisal.setIsbn(updateCmd.getIsbn());
+		updateAppraisal.setAppraisal_num(updateCmd.getAppraisal_num());
+		updateAppraisal.setStar(updateCmd.getStar());
+		updateAppraisal.setBook_comment(updateCmd.getBook_comment());
+		updateAppraisal.setStart_date(updateCmd.getStart_date());
+		updateAppraisal.setEnd_date(updateCmd.getEnd_date());
+		updateAppraisal.setCo_prv(updateCmd.getCo_prv());
+		updateAppraisal.setBook_status_num(updateCmd.getBook_status_num());
+		System.out.println("뷰에서 가져온 상태번호"+updateAppraisal.getBook_status_num());
+		
 		appraisalService.updateComment(updateAppraisal);
 		System.out.println("평가 수정 성공");
-		return "redirect:/read/" + updateAndDeleteCmd.getIsbn() + "?query=";
+		return "redirect:/read/" + updateCmd.getIsbn() + "?query=";
 	}
 
 	/**
 	 * 평가 삭제
 	 */
-	public String deleteComment(@ModelAttribute("updateAndDeleteCmd") UpdateAndDeleteCmd updateAndDeleteCmd, Long mem_num) throws UnsupportedEncodingException {
-		BookShelfVO bookShelf = new BookShelfVO();
-
-		bookShelf.setIsbn(updateAndDeleteCmd.getIsbn());
-		bookShelf.setMem_num(mem_num);
-
-		appraisalService.deleteComment(bookShelf);
+	public String deleteComment(@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, Long mem_num) throws UnsupportedEncodingException {
+		DeleteCmd deleteComment = new DeleteCmd();
+		deleteCmd.setIsbn(deleteCmd.getIsbn().substring(0,10));
 		
-		return "redirect:/read/" + updateAndDeleteCmd.getIsbn() + "?query=";
+		deleteComment.setIsbn(deleteCmd.getIsbn());
+		deleteComment.setMem_num(mem_num);
+		deleteComment.setBook_status_num(deleteCmd.getBook_status_num());
+		deleteComment.setAppraisal_num(deleteCmd.getAppraisal_num());
+		
+		appraisalService.deleteComment(deleteComment);
+		
+		return "redirect:/read/" + deleteCmd.getIsbn() + "?query=";
 	}
 
 }

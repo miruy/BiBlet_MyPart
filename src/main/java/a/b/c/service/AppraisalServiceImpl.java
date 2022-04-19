@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
+import a.b.c.model.DeleteCmd;
+import a.b.c.model.UpdateCmd;
 import a.b.c.model.allCommentByBookVO;
-import a.b.c.model.updateCommentVO;
 import a.b.c.repository.AppraisalDAO;
 import lombok.RequiredArgsConstructor;
 
@@ -47,13 +48,13 @@ public class AppraisalServiceImpl implements AppraisalService {
 	}
 	
 	@Override
-	public void deleteComment(BookShelfVO bookShelf) {
-		appraisalDAO.deleteComment(bookShelf);
+	public void deleteComment(DeleteCmd deleteComment) {
+		appraisalDAO.deleteComment(deleteComment);
 	}
 	
 	@Override
-	public void updateComment(updateCommentVO updateAppraisal) {
-		appraisalDAO.updateComment(updateAppraisal);
+	public void updateComment(UpdateCmd updateComment) {
+		appraisalDAO.updateComment(updateComment);
 	}
 }
 

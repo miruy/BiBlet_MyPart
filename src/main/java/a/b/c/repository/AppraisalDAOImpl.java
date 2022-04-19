@@ -7,8 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
+import a.b.c.model.DeleteCmd;
+import a.b.c.model.UpdateCmd;
 import a.b.c.model.allCommentByBookVO;
-import a.b.c.model.updateCommentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,12 +53,12 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 	
 	//평가 삭제 
 	@Override
-	public void deleteComment(BookShelfVO bookShelf) {
-		sqlSessionTemplate.delete("deleteComment", bookShelf);
+	public void deleteComment(DeleteCmd deleteComment) {
+		sqlSessionTemplate.delete("deleteComment", deleteComment);
 	}
 	
 	@Override
-	public void updateComment(updateCommentVO updateAppraisal) {
+	public void updateComment(UpdateCmd updateAppraisal) {
 		sqlSessionTemplate.update("updateComment", updateAppraisal);
 	}
 }

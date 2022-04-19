@@ -12,9 +12,10 @@
 	
 <!-- 	자주 사용하는 VO 정보 - alias : 별칭  -->
 	<typeAliases>
-		<typeAlias alias="appraisal" type="a.b.c.model.AppraisalVO"/>
+		<typeAlias alias="insertComment" type="a.b.c.model.AppraisalVO"/>
 		<typeAlias alias="bookShelf" type="a.b.c.model.BookShelfVO"/>
 		<typeAlias alias="allCommentByBook" type="a.b.c.model.allCommentByBookVO"/>
-		<typeAlias alias="updateAppraisal" type="a.b.c.model.updateCommentVO"/>
+		<typeAlias alias="updateComment" type="a.b.c.model.UpdateCmd"/>
+		<typeAlias alias="deleteComment" type="a.b.c.model.DeleteCmd"/>
 	</typeAliases>
 </configuration>

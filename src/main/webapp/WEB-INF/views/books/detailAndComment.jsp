@@ -17,8 +17,8 @@
 				<option value="title">제목</option>
 				<option value="author">저자</option>
 				<option value="publisher">출판사</option>
-			</select> <input type="text" name="query" id="query" value="${query}"
-				placeholder="제목, 저자 또는 출판사 검색" size=30>
+			</select> 
+			<input type="text" name="query" id="query" value="${query}" placeholder="제목, 저자 또는 출판사 검색" size=30>
 			<button id="search">검색</button>
 		</p>
 	</form>
@@ -26,7 +26,7 @@
 	<div id="bookInfo"></div>
 
 
-	<form method="post" action="/read?actionFlag=1" commandName="appraisal">
+	<form method="post" action="/read?actionFlag=1" commandName="insertCmd">
 		<p>
 			독서 상태 : <select name="option">
 				<option value="none">=== 선택 ===</option>
@@ -68,7 +68,6 @@
 		</c:if>
 	</p>
 	
-	<form method="post"  commandName="updateAndDeleteCmd">
 		<c:if test="${!empty commentsByMembers}">
 			<c:forEach var="commentsByMember" items="${commentsByMembers}">
 				<p>
@@ -79,51 +78,58 @@
 					시작날짜 : ${commentsByMember.start_date} 
 					다 읽은 날짜 : ${commentsByMember.end_date} 
 					평가 : ${commentsByMember.book_comment}
-					
+					상태번호 : ${commentsByMember.book_status_num}
+				</p>					
+	
+				<form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
 					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
 					<input type="hidden" name="query" id="query" value="${query}" /> 
-					<input type="submit" value="삭제" formaction="/read?actionFlag=2">
-					<input type='button' value='수정' onclick='updateComment()'/>
-				</p>
+					<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
+					<input type="submit" value="삭제" >
+				</form>
+				
+				<input type='button' value='수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>
+								
+				<form method="post"  action="/read?actionFlag=3" commandName="updateCmd">
+					<div id="${commentsByMember.appraisal_num}" style="display:none;">
+							독서 상태 : 
+								<select name="option">
+									<option value="none">=== 선택 ===</option>
+									<option value=0>찜</option>
+									<option value=1>보는 중</option>
+									<option value=2>독서 완료</option>
+								</select> * 평가 작성은 독서 완료 시 가능합니다. 
+								
+								별점 : 
+								<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
+								<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
+								<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
+								<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
+								<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
+					
+				
+								평가 : <textarea name="book_comment"></textarea>
+				
+								구독 시작 날짜 : <input type="date" name="start_date" /> 
+								구독 완료 날짜 : <input type="date" name="end_date" />
+								공개 : <input type="checkbox" name="co_prv" value="공개" />
+								비공개 : <input type="checkbox" name="co_prv" value="비공개" />
+								<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
+								<input type="hidden" name="query" id="query" value="${query}" /> 
+								<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
+								<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
+								<input type="submit" value="저장">
+					</div>	
+				</form>
 			</c:forEach>
 		</c:if>
-	</form>
 	
-	<form method="post">
 		<script>
-				function updateComment() {
-					 $("#updateForm").show();
-				} 
-			</script>
-				<div id="updateForm" style="display:none;">
-					독서 상태 : 
-					<select name="option">
-						<option value="none">=== 선택 ===</option>
-						<option value=0>찜</option>
-						<option value=1>보는 중</option>
-						<option value=2>독서 완료</option>
-					</select> * 평가 작성은 독서 완료 시 가능합니다. 
-					
-					별점 : 
-					<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
-					<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
-					<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
-					<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
-					<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
+			function updateComment(updateForm) {
+				 $("#"+updateForm).toggle();
+			} 
+		</script>
 		
-	
-					평가 : <textarea name="book_comment"></textarea>
-	
-					구독 시작 날짜 : <input type="date" name="start_date" /> 
-					구독 완료 날짜 : <input type="date" name="end_date" />
-					공개 : <input type="checkbox" name="co_prv" value="공개" />
-					비공개 : <input type="checkbox" name="co_prv" value="비공개" />
-					
-					<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
-					<input type="submit" value="저장" formaction="/read?actionFlag=3">
-				</div>	
-	</form>
-
 	<script>
 	
 // 		도서 검색 버튼 클릭 시 도서 데이터 요청

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentCmd {
+public class InsertCmd {
 	private int star; // 별점
 	private String book_comment; // 코멘트(평가)
 	private String start_date; // 도서 구독 시작 날짜
