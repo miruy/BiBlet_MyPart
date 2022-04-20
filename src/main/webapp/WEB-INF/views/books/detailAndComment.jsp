@@ -96,56 +96,76 @@
 					
 				</form>
 				
-				<input type="button" value="삭제" onclick='passCheck(${commentsByMember.appraisal_num})'>
-				<input type='button' value='수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>
-								
-				<form method="post"  action="/read?actionFlag=3" commandName="updateCmd">
-					<div id="u${commentsByMember.appraisal_num}" style="display:none;">
-							독서 상태 : 
-								<select name="option">
-									<option value="none">=== 선택 ===</option>
-									<option value=0>찜</option>
-									<option value=1>보는 중</option>
-									<option value=2>독서 완료</option>
-								</select> * 평가 작성은 독서 완료 시 가능합니다. 
-								
-								별점 : 
-								<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
-								<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
-								<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
-								<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
-								<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
+				<input type="button" value="삭제" onclick='passCheckForDelete(${commentsByMember.appraisal_num})'>
+				<input type='button' value='수정' onclick='passCheckForUpdate(${commentsByMember.appraisal_num})'/>
+				
+				<c:if test="${!empty passCheckTrue}">
+					비밀번호 확인이 완료되었습니다. 비밀번호 : ${passCheckTrue}
+					<input type='button' value='평가 수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>		
+				</c:if>
+						
+					<form method="post"  action="/read?actionFlag=4" commandName="updateCmd">
+						<div id="u${commentsByMember.appraisal_num}" style="display:none;">
+								독서 상태 : 
+									<select name="option">
+										<option value="none">=== 선택 ===</option>
+										<option value=0>찜</option>
+										<option value=1>보는 중</option>
+										<option value=2>독서 완료</option>
+									</select> * 평가 작성은 독서 완료 시 가능합니다. 
+									
+									별점 : 
+									<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
+									<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
+									<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
+									<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
+									<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
+						
 					
+									평가 : <textarea name="book_comment"></textarea>
+					
+									구독 시작 날짜 : <input type="date" name="start_date" /> 
+									구독 완료 날짜 : <input type="date" name="end_date" />
+									공개 : <input type="checkbox" name="co_prv" value="공개" />
+									비공개 : <input type="checkbox" name="co_prv" value="비공개" />
+									<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
+									<input type="hidden" name="query" id="query" value="${query}" /> 
+									<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
+									<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
+									
+									<input type="submit" value="저장">
+						</div>	
+					</form>
 				
-								평가 : <textarea name="book_comment"></textarea>
-				
-								구독 시작 날짜 : <input type="date" name="start_date" /> 
-								구독 완료 날짜 : <input type="date" name="end_date" />
-								공개 : <input type="checkbox" name="co_prv" value="공개" />
-								비공개 : <input type="checkbox" name="co_prv" value="비공개" />
-								<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
-								<input type="hidden" name="query" id="query" value="${query}" /> 
-								<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
-								<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
-								<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
-								
-								비밀번호 입력 : 
-								<input type="text" name="passCheck" id="passCheck">
-								<input type="submit" value="저장">
-					</div>	
-				</form>
+				<form method="post" action="/read?actionFlag=3" commandName="passCheckCmd">
+					<div id="pfu${commentsByMember.appraisal_num}" style="display:none;">
+							 비밀번호 입력 : 
+							<input type="text" name="passCheck" id="passCheck">
+							<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
+							<input type="hidden" name="query" id="query" value="${query}" /> 
+							<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
+							<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
+							<input type="submit" value="저장">
+					</div>
+				</form>	
+					
 			</c:forEach>
 		</c:if>
 		
 		<script>
+			function passCheckForUpdate(app_num) {
+				 $("#pfu"+app_num).toggle();
+			}  
+		</script>
+		
+		<script>
 			function updateComment(app_num) {
-				passCheck(app_num);
 				 $("#u"+app_num).toggle();
 			}  
 		</script>
 		
 		<script>
-			function passCheck(app_num) {
+			function passCheckForDelete(app_num) {
 				$("#d"+app_num).toggle();
 			}
 		</script>
