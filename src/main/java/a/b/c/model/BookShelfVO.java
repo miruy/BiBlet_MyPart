@@ -13,5 +13,5 @@ public class BookShelfVO {
 	private Long book_status_num;	//상태번호PK
 	private int book_status;	//상태 0:찜, 1:보는 중, 2:완료
 	private Long mem_num;	//회원번호FK
-	private String isbn;
+	private String isbn;	//isbn
 }

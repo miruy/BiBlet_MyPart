@@ -14,11 +14,11 @@ public class UpdateCmd {
 	private String query;
 	private Long appraisal_num;
 	private Long mem_num;
-	private int star; // 별점
-	private String book_comment; // 코멘트(평가)
-	private String start_date; // 도서 구독 시작 날짜
-	private String end_date; // 도서 구독 완료 날짜
-	private String co_prv; // 코멘트 공개 여부
+	private int star; 
+	private String book_comment; 
+	private String start_date; 
+	private String end_date; 
+	private String co_prv; 
 	private Long book_status_num;
 	private String mem_pass;
 	private String passCheck;

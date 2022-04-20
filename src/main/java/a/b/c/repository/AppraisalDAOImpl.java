@@ -20,43 +20,45 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 
 	private final SqlSessionTemplate sqlSessionTemplate;
 
-	// 평가(코멘트) 작성
+	// 평가 작성
 	@Override
 	public void writeComment(AppraisalVO appraisal) {
 		sqlSessionTemplate.insert("writeComment", appraisal);
 	}
 	
-	//평가 작성 시 도서 ISBN과 상태(독서완료) 작성
+	// 독서 상태 삽입 및 해당 독서 상태 바로 호출
 	@Override
 	public BookShelfVO insertBookShelf(BookShelfVO bookShelf) {
 			sqlSessionTemplate.insert("insertBookShelf", bookShelf);
 		return selectBookShelf(bookShelf);
 	}
 	
+	// 독서 상태 호출
 	@Override
 	public BookShelfVO selectBookShelf(BookShelfVO bookShelf) {
 		return sqlSessionTemplate.selectOne("selectBookShelf", bookShelf);
 	}
 	
 
-	//해당 도서의 대한 모든 평가 불러오기
+	// 해당 도서의 대한 모든 평가 호출
 	@Override
 	public List<allCommentByBookVO> findAllComment(String isbn) {
 		return sqlSessionTemplate.selectList("findAllComment", isbn);
 	}
 
-	//해당 도서의 대한 평가 갯수
+	// 해당 도서의 대한 평가 개수 호출
 	@Override
 	public int commentCount(String isbn) {
 		return sqlSessionTemplate.selectOne("commentCount", isbn);
 	}
 	
-	//평가 삭제 
+	// 평가 삭제 
 	@Override
 	public void deleteComment(DeleteCmd deleteComment) {
 		sqlSessionTemplate.delete("deleteComment", deleteComment);
 	}
 	
+	// 평가 수정
 	@Override
 	public void updateComment(UpdateCmd updateAppraisal) {
 		sqlSessionTemplate.update("updateComment", updateAppraisal);

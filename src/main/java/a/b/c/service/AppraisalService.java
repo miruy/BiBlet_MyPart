@@ -9,11 +9,11 @@ import a.b.c.model.UpdateCmd;
 import a.b.c.model.allCommentByBookVO;
 
 public interface AppraisalService {
-	void writeComment(AppraisalVO appraisal);	//평가(코멘트) 작성
-	BookShelfVO insertBookShelf(BookShelfVO bookShelf); 	//평가 작성 시 도서ISBN 과 상태(독서완료)저장 
-	BookShelfVO selectBookShelf(BookShelfVO bookShelf);
-	List<allCommentByBookVO> findAllComment(String isbn); //해당 도서의 대한 모든 평가 불러오기
-	int commentCount(String isbn); 	//해당 도서의 대한 평가 갯수
+	void writeComment(AppraisalVO appraisal);	//평가 작성
+	BookShelfVO insertBookShelf(BookShelfVO bookShelf); 	//독서 상태 삽입
+	BookShelfVO selectBookShelf(BookShelfVO bookShelf);		//독서 상태 호출
+	List<allCommentByBookVO> findAllComment(String isbn); 	//해당 도서의 대한 모든 평가 호출
+	int commentCount(String isbn); 		//해당 도서의 대한 평가 개수 호출
 	void deleteComment(DeleteCmd deleteComment);	//평가 삭제 
-	void updateComment(UpdateCmd updateComment); //평가 수정
+	void updateComment(UpdateCmd updateComment); 	//평가 수정
 }

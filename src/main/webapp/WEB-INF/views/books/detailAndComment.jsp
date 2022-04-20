@@ -8,6 +8,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BiBlet 도서 상세/평가</title>
+
+<link href="${pageContext.request.contextPath}/books/star.css" rel="stylesheet" type="text/css">
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -38,13 +40,21 @@
 		
 		
 			별점 : 
-			<div class="star-rating space-x-4 mx-auto">
-				<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
-				<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
-				<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
-				<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
-				<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
-			</div>
+				<div class="starpoint_wrap">
+				  <div class="starpoint_box">
+				    <label for="starpoint_2" class="label_star" title="1"><span class="blind">1점</span></label>
+				    <label for="starpoint_4" class="label_star" title="2"><span class="blind">2점</span></label>
+				    <label for="starpoint_6" class="label_star" title="3"><span class="blind">3점</span></label>
+				    <label for="starpoint_8" class="label_star" title="4"><span class="blind">4점</span></label>
+				    <label for="starpoint_10" class="label_star" title="5"><span class="blind">5점</span></label>
+				    <input type="radio" name="starpoint" id="starpoint_1" class="star_radio">
+				    <input type="radio" name="starpoint" id="starpoint_2" class="star_radio">
+				    <input type="radio" name="starpoint" id="starpoint_3" class="star_radio">
+				    <input type="radio" name="starpoint" id="starpoint_4" class="star_radio">
+				    <input type="radio" name="starpoint" id="starpoint_5" class="star_radio">
+				    <span class="starpoint_bg"></span>
+				  </div>
+				</div>
 		
 		
 		<p>
@@ -104,7 +114,7 @@
 					<input type='button' value='평가 수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>		
 				</c:if>
 						
-					<form method="post"  action="/read?actionFlag=4" commandName="updateCmd">
+					<form method="post" action="/read?actionFlag=4" commandName="updateCmd" class="mb-3" name="myform" id="myform">
 						<div id="u${commentsByMember.appraisal_num}" style="display:none;">
 								독서 상태 : 
 									<select name="option">
@@ -115,11 +125,21 @@
 									</select> * 평가 작성은 독서 완료 시 가능합니다. 
 									
 									별점 : 
-									<input type="radio" id="1star" name="star" value=5 v-model="ratings" />1점(지울 예정) 
-									<input type="radio" id="2star" name="star" value=4 v-model="ratings" />2점(지울 예정)
-									<input type="radio" id="3star" name="star" value=3 v-model="ratings" />3점(지울 예정)
-									<input type="radio" id="4star" name="star" value=2 v-model="ratings" />4점(지울 예정) 
-									<input type="radio" id="5star" name="star" value=1 v-model="ratings" />5점(지울 예정)
+										<div class="starpoint_wrap">
+										  <div class="starpoint_box">
+										    <label for="starpoint_2" class="label_star" title="1"><span class="blind">1점</span></label>
+										    <label for="starpoint_4" class="label_star" title="2"><span class="blind">2점</span></label>
+										    <label for="starpoint_6" class="label_star" title="3"><span class="blind">3점</span></label>
+										    <label for="starpoint_8" class="label_star" title="4"><span class="blind">4점</span></label>
+										    <label for="starpoint_10" class="label_star" title="5"><span class="blind">5점</span></label>
+										    <input type="radio" name="starpoint" id="starpoint_1" class="star_radio">
+										    <input type="radio" name="starpoint" id="starpoint_2" class="star_radio">
+										    <input type="radio" name="starpoint" id="starpoint_3" class="star_radio">
+										    <input type="radio" name="starpoint" id="starpoint_4" class="star_radio">
+										    <input type="radio" name="starpoint" id="starpoint_5" class="star_radio">
+										    <span class="starpoint_bg"></span>
+										  </div>
+										</div>
 						
 					
 									평가 : <textarea name="book_comment"></textarea>
