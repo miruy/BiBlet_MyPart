@@ -28,7 +28,8 @@
  	 appraisal.end_date,
  	 appraisal.book_status_num,
  	 member.mem_id,
- 	 member.mem_pic
+ 	 member.mem_pic,
+ 	 member.mem_pass
 	FROM bookshelf
 	INNER JOIN appraisal ON bookshelf.book_status_num = appraisal.book_status_num
 	INNER JOIN member ON bookshelf.mem_num = member.mem_num

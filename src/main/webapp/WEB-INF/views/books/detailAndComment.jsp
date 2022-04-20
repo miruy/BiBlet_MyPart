@@ -79,19 +79,28 @@
 					다 읽은 날짜 : ${commentsByMember.end_date} 
 					평가 : ${commentsByMember.book_comment}
 					상태번호 : ${commentsByMember.book_status_num}
+					비밀번호 : ${commentsByMember.mem_pass}
 				</p>					
 	
 				<form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
 					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
 					<input type="hidden" name="query" id="query" value="${query}" /> 
 					<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
-					<input type="submit" value="삭제" >
+					<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
+					
+					<div id="d${commentsByMember.appraisal_num}" style="display:none;">
+						 비밀번호 입력 : 
+						<input type="text" name="passCheck" id="passCheck">
+						<input type="submit" value="저장">
+					</div>
+					
 				</form>
 				
+				<input type="button" value="삭제" onclick='passCheck(${commentsByMember.appraisal_num})'>
 				<input type='button' value='수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>
 								
 				<form method="post"  action="/read?actionFlag=3" commandName="updateCmd">
-					<div id="${commentsByMember.appraisal_num}" style="display:none;">
+					<div id="u${commentsByMember.appraisal_num}" style="display:none;">
 							독서 상태 : 
 								<select name="option">
 									<option value="none">=== 선택 ===</option>
@@ -118,16 +127,27 @@
 								<input type="hidden" name="query" id="query" value="${query}" /> 
 								<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
 								<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
+								<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
+								
+								비밀번호 입력 : 
+								<input type="text" name="passCheck" id="passCheck">
 								<input type="submit" value="저장">
 					</div>	
 				</form>
 			</c:forEach>
 		</c:if>
-	
+		
 		<script>
-			function updateComment(updateForm) {
-				 $("#"+updateForm).toggle();
-			} 
+			function updateComment(app_num) {
+				passCheck(app_num);
+				 $("#u"+app_num).toggle();
+			}  
+		</script>
+		
+		<script>
+			function passCheck(app_num) {
+				$("#d"+app_num).toggle();
+			}
 		</script>
 		
 	<script>

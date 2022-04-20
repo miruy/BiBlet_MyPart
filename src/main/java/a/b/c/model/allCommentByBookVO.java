@@ -19,4 +19,5 @@ public class allCommentByBookVO {
 	private String mem_id; // 회원 아이디
 	private String mem_pic; // 회원 프로필 사진
 	private Long book_status_num;
+	private String mem_pass;
 }

@@ -20,4 +20,6 @@ public class UpdateCmd {
 	private String end_date; // 도서 구독 완료 날짜
 	private String co_prv; // 코멘트 공개 여부
 	private Long book_status_num;
+	private String mem_pass;
+	private String passCheck;
 }
