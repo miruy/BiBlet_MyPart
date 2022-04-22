@@ -8,7 +8,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BiBlet 도서 상세/평가</title>
-<link href="./books/star.css" rel="stylesheet" type="text/css">
+<link href="./star.css" rel="stylesheet" type="text/css">
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -58,7 +58,7 @@
 
 
 			구독 시작 날짜 : <input type="date" name="start_date" /> 
-			구독 완료 날짜 : <input type="date" name="end_date" />
+			구독 완료 날짜 : <input type="date" id="datepicker" name="end_date"/>
 			공개 : <input type="checkbox" name="co_prv" value="공개" />
 			비공개 : <input type="checkbox" name="co_prv" value="비공개" />
 			<input type="hidden" name="isbn" id="isbn" value="${isbn}" />
@@ -119,17 +119,17 @@
 									</select> * 평가 작성은 독서 완료 시 가능합니다. 
 									
 									별점 : 
-										<div class="star-rating">
-										  <input type="radio" id="5-stars" name="star" value="5" />
-										  <label for="5-stars" class="star">&#9733;</label>
-										  <input type="radio" id="4-stars" name="star" value="4" />
-										  <label for="4-stars" class="star">&#9733;</label>
-										  <input type="radio" id="3-stars" name="star" value="3" />
-										  <label for="3-stars" class="star">&#9733;</label>
-										  <input type="radio" id="2-stars" name="star" value="2" />
-										  <label for="2-stars" class="star">&#9733;</label>
-										  <input type="radio" id="1-star" name="star" value="1" />
-										  <label for="1-star" class="star">&#9733;</label>
+										<div class="star-rating space-x-4 mx-auto">
+											<input type="radio" id="5-stars" name="rating" value="5" v-model="ratings"/>
+											<label for="5-stars" class="star pr-4">★</label>
+											<input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
+											<label for="4-stars" class="star">★</label>
+											<input type="radio" id="3-stars" name="rating" value="3" v-model="ratings"/>
+											<label for="3-stars" class="star">★</label>
+											<input type="radio" id="2-stars" name="rating" value="2" v-model="ratings"/>
+											<label for="2-stars" class="star">★</label>
+											<input type="radio" id="1-star" name="rating" value="1" v-model="ratings" />
+											<label for="1-star" class="star">★</label>
 										</div>
 						
 					
@@ -163,23 +163,27 @@
 			</c:forEach>
 		</c:if>
 		
-		<script>
-			function passCheckForUpdate(app_num) {
-				 $("#pfu"+app_num).toggle();
-			}  
 		
+		<script>	
+			
 		
-	
+// 			평가 수정 폼 보여주기
 			function updateComment(app_num) {
 				 $("#u"+app_num).toggle();
 			}  
 	
 		
+//			평가 수정을 위한 비밀번호 확인	
+			function passCheckForUpdate(app_num) {
+				 $("#pfu"+app_num).toggle();
+			}  
 		
+		
+// 			평가 삭제를 위한 비밀번호 확인
 			function passCheckForDelete(app_num) {
 				$("#d"+app_num).toggle();
-			}
-	
+			}	
+
 	
 // 		도서 검색 버튼 클릭 시 도서 데이터 요청
 	   	 $(document).ready(function () {
@@ -205,11 +209,8 @@
 	            });
 	        }) 
 	       
-            
-	        
-	        
 	  		
-//     	상세페이지 실행하자마자 도서 데이터 요청
+//     		 상세페이지 실행하자마자 도서 데이터 요청
              var pageNum = 1;
             	$.ajax({	//카카오 검색요청 / [요청]
                     method: "GET",
@@ -233,7 +234,8 @@
             	
       		 
       		  })  
-      		  
+      		
+//       	'독서 완료'시 평가 작성 가능 
       		let submitFlag = false;
       		
       		let bookStatus = function(){
@@ -255,6 +257,7 @@
       			}
       			return submitFlag;
       		}
+
  	 </script>
 
 </body>
