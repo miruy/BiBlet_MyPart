@@ -26,18 +26,36 @@
 	
 	<div id="bookInfo"></div>
 
+<%-- 	<form method="post" action="/read?actionFlag=5" commandName="BookStatusCmd"> 	 --%>
+		
+<!-- 				독서 상태 확인하기 : <select name="option"> -->
+<!-- 					<option value="none">=== 선택 ===</option> -->
+<!-- 					<option value=0>찜</option> -->
+<!-- 					<option value=1>보는 중</option> -->
+<!-- 					<option value=2>독서 완료</option> -->
+<!-- 				</select>  -->
+<%-- 			<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> --%>
+<%-- 			<input type="hidden" name="query" id="query" value="${query}" />  --%>
+<!-- 			<input type="submit" value="확인"> -->
+<%-- 	</form> --%>
+	
+<%-- 	<c:if test="${!empty bookStatusCmd}"> --%>
+<!-- 	독서 상태 2 -->
+<%-- 	</c:if> --%>
+<%-- 	<form:errors path="bookStatus"></form:errors> --%>
+	
 
-	<form method="post" action="/read?actionFlag=1" commandName="insertCmd" name="myform" id="myform">
-		<p>
-			독서 상태 : <select name="option">
-				<option value="none">=== 선택 ===</option>
-				<option value=0>찜</option>
-				<option value=1>보는 중</option>
-				<option value=2>독서 완료</option>
-			</select> * 평가 작성은 독서 완료 시 가능합니다. 
-		</p>
-		
-		
+	<form method="post" action="/read?actionFlag=1" commandName="insertCmd" name="myform" id="myform" onsubmit="return bookSubmit()">
+			<p>
+				독서 상태 : <select id="option" name="option" onChange="bookStatus()">
+					<option value="none">=== 선택 ===</option>
+					<option value=0>찜</option>
+					<option value=1>보는 중</option>
+					<option value=2>독서 완료</option>
+				</select> 
+				
+			</p>
+			
 			별점 : 
 				 
 				<div class="star-rating">
@@ -64,7 +82,8 @@
 			비공개 : <input type="checkbox" name="co_prv" value="비공개" />
 			<input type="hidden" name="isbn" id="isbn" value="${isbn}" />
 			<input type="hidden" name="query" id="query" value="${query}" /> 
-			<input type="submit" value="도서 평가 등록">
+			<input type="submit" name="button" value="등록">
+			<span id="msg"></span>
 	</form>
 
 	
@@ -84,9 +103,10 @@
 					시작날짜 : ${commentsByMember.start_date} 
 					다 읽은 날짜 : ${commentsByMember.end_date} 
 					평가 : ${commentsByMember.book_comment}
-					상태번호 : ${commentsByMember.book_status_num}
-					비밀번호 : ${commentsByMember.mem_pass}
 				</p>					
+				
+				<input type="button" value="삭제" onclick='passCheckForDelete(${commentsByMember.appraisal_num})'>
+				<input type='button' value='수정' onclick='passCheckForUpdate(${commentsByMember.appraisal_num})'/>
 	
 				<form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
 					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
@@ -96,14 +116,11 @@
 					
 					<div id="d${commentsByMember.appraisal_num}" style="display:none;">
 						 비밀번호 입력 : 
-						<input type="text" name="passCheck" id="passCheck">
-						<input type="submit" value="저장">
+						<input type="password" name="passCheck" id="passCheck">
+						<input type="submit" value="확인">
 					</div>
 					
 				</form>
-				
-				<input type="button" value="삭제" onclick='passCheckForDelete(${commentsByMember.appraisal_num})'>
-				<input type='button' value='수정' onclick='passCheckForUpdate(${commentsByMember.appraisal_num})'/>
 				
 				<c:if test="${!empty passCheckTrue}">
 					비밀번호 확인이 완료되었습니다. 비밀번호 : ${passCheckTrue}
@@ -113,7 +130,7 @@
 					<form method="post" action="/read?actionFlag=4" commandName="updateCmd" class="mb-3" name="myform" id="myform">
 						<div id="u${commentsByMember.appraisal_num}" style="display:none;">
 								독서 상태 : 
-									<select name="option">
+									<select id="option" name="option">
 										<option value="none">=== 선택 ===</option>
 										<option value=0>찜</option>
 										<option value=1>보는 중</option>
@@ -158,7 +175,7 @@
 							<input type="hidden" name="query" id="query" value="${query}" /> 
 							<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
 							<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
-							<input type="submit" value="저장">
+							<input type="submit" value="확인">
 					</div>
 				</form>	
 					
@@ -237,8 +254,27 @@
             	
       		 
       		  })  
-      		 
-				  
+      		let submitFlag = false;
+      		
+      		let bookStatus = function(){
+      			let select = document.getElementById("option");
+      			let selectValue = select.options[document.getElementById("option").selectedIndex].value;
+      			if(selectValue == 2){
+      				submitFlag = true;
+      			}else{
+      				submitFlag = false;
+      			}
+      			console.log("flag : " + submitFlag);
+      		}
+			
+      		let bookSubmit = function(){
+      			let msg = document.getElementById("msg");
+      			if(!submitFlag){
+      				
+      				msg.innerHTML = "독서 완료 시에만 평가 작성이 가능합니다.";
+      			}
+      			return submitFlag;
+      		}
  	 </script>
 
 </body>
