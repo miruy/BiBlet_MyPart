@@ -26,25 +26,6 @@
 	
 	<div id="bookInfo"></div>
 
-<%-- 	<form method="post" action="/read?actionFlag=5" commandName="BookStatusCmd"> 	 --%>
-		
-<!-- 				독서 상태 확인하기 : <select name="option"> -->
-<!-- 					<option value="none">=== 선택 ===</option> -->
-<!-- 					<option value=0>찜</option> -->
-<!-- 					<option value=1>보는 중</option> -->
-<!-- 					<option value=2>독서 완료</option> -->
-<!-- 				</select>  -->
-<%-- 			<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> --%>
-<%-- 			<input type="hidden" name="query" id="query" value="${query}" />  --%>
-<!-- 			<input type="submit" value="확인"> -->
-<%-- 	</form> --%>
-	
-<%-- 	<c:if test="${!empty bookStatusCmd}"> --%>
-<!-- 	독서 상태 2 -->
-<%-- 	</c:if> --%>
-<%-- 	<form:errors path="bookStatus"></form:errors> --%>
-	
-
 	<form method="post" action="/read?actionFlag=1" commandName="insertCmd" name="myform" id="myform" onsubmit="return bookSubmit()">
 			<p>
 				독서 상태 : <select id="option" name="option" onChange="bookStatus()">
@@ -186,21 +167,19 @@
 			function passCheckForUpdate(app_num) {
 				 $("#pfu"+app_num).toggle();
 			}  
-		</script>
 		
-		<script>
+		
+	
 			function updateComment(app_num) {
 				 $("#u"+app_num).toggle();
 			}  
-		</script>
+	
 		
-		<script>
+		
 			function passCheckForDelete(app_num) {
 				$("#d"+app_num).toggle();
 			}
-		</script>
-		
-	<script>
+	
 	
 // 		도서 검색 버튼 클릭 시 도서 데이터 요청
 	   	 $(document).ready(function () {
@@ -254,6 +233,7 @@
             	
       		 
       		  })  
+      		  
       		let submitFlag = false;
       		
       		let bookStatus = function(){

@@ -75,34 +75,16 @@ public class AppraisalController {
 	 */
 	@PostMapping("/read")
 	public String writeComment(int actionFlag, Model model, RedirectAttributes rttr,
-			/*@ModelAttribute("bookStatusCmd") BookStatusCmd bookStatusCmd,Errors errors,*/
 			@ModelAttribute("passCheckCmd") PassCheckCmd passCheckCmd, @ModelAttribute("insertCmd") InsertCmd insertCmd,
-			@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, @ModelAttribute("updateCmd") UpdateCmd updateCmd,
-			HttpServletRequest request, HttpServletResponse response)
-			throws UnsupportedEncodingException {
+			@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, @ModelAttribute("updateCmd") UpdateCmd updateCmd) throws UnsupportedEncodingException {
 
-		
-		response.setCharacterEncoding("UTF-8"); 
-		response.setContentType("text/html; charset=UTF-8");
-		String btn = request.getParameter("button");
-		
-		
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 15; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 16; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
 		String redirectUrl = "";
 		if (actionFlag == 1) {
-			
-			if(btn.equals("확인")) {
-				
-				System.out.println("확인버튼");
-				return insertBookStatus(insertCmd, rttr, mem_num);
-				
-			}else if(btn.equals("등록")) {
-				System.out.println("등록버튼");
-			}
 
 			String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
 			redirectUrl = writeComment(insertCmd, mem_num) + encodedParam;
@@ -131,42 +113,8 @@ public class AppraisalController {
 			redirectUrl = updateComment(updateCmd, mem_num) + encodedParam;
 
 			return redirectUrl;
-
 		}
-//		if (actionFlag == 5) {
-//			return insertBookStatus(bookStatusCmd, errors, rttr, mem_num);
-//		}
 		return redirectUrl;
-	}
-
-	/**
-	 * 독서 상태 삽입
-	 */
-	private String insertBookStatus(InsertCmd insertCmd, RedirectAttributes rttr, Long mem_num)
-			throws UnsupportedEncodingException {
-
-//		new OnlyReadingComplateValidator().validate(insertCmd, errors);
-
-		String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
-		BookShelfVO bookShelf = new BookShelfVO();
-		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
-		
-//		if (errors.hasErrors()) {
-//			return "errorTest";
-//		}
-//		try {
-			
-				System.out.println("option이 1아니면 0임");
-				bookShelf.setBook_status(insertCmd.getOption());
-				bookShelf.setMem_num(mem_num);
-				bookShelf.setIsbn(insertCmd.getIsbn());
-
-				appraisalService.insertBookShelf(bookShelf);
-			
-//		} CATCH (BOOKSTATUSONLYREADINGCOMPLETEEXCEPTION E) {
-//			ERRORS.REJECTVALUE("BOOKSTATUS", "READINGCOMPLATE");
-//		}
-		return "redirect:/read/" + insertCmd.getIsbn() + "?query=" + encodedParam;
 	}
 
 	/**
@@ -177,14 +125,11 @@ public class AppraisalController {
 		BookShelfVO bookShelf = new BookShelfVO();
 		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
 
-		// 독서 상태가 2가 아닌 경우 에러
-
-//		bookShelf.setBook_status(insertCmd.getOption());
-//		bookShelf.setMem_num(mem_num);
-//		bookShelf.setIsbn(insertCmd.getIsbn());
-		bookShelf = appraisalService.selectBookShelf(bookShelf);
+		bookShelf.setBook_status(insertCmd.getOption());
+		bookShelf.setMem_num(mem_num);
+		bookShelf.setIsbn(insertCmd.getIsbn());
+		bookShelf = appraisalService.insertBookShelf(bookShelf);
 		
-
 		appraisal.setStar(insertCmd.getStar());
 		appraisal.setBook_comment(insertCmd.getBook_comment());
 		appraisal.setStart_date(insertCmd.getStart_date());
