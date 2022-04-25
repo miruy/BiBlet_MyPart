@@ -80,7 +80,7 @@ public class AppraisalController {
 
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 16; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 17; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
 		String redirectUrl = "";

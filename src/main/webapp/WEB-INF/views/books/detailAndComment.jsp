@@ -8,7 +8,50 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BiBlet 도서 상세/평가</title>
-<link href="./star.css" rel="stylesheet" type="text/css">
+ <style>
+ .star-rating {
+  border:solid 1px #ccc;
+  display:flex;
+  flex-direction: row-reverse;
+  font-size:1.5em;
+  justify-content:space-around;
+  padding:0 .2em;
+  text-align:center;
+  width:5em;
+}
+
+.star-rating input {
+  display:none;
+}
+
+.star-rating label {
+  color:#ccc;
+  cursor:pointer;
+}
+
+.star-rating :checked ~ label {
+  color:#f90;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color:#fc0;
+}
+
+/* explanation */
+
+article {
+  background-color:#ffe;
+  box-shadow:0 0 1em 1px rgba(0,0,0,.25);
+  color:#006;
+  font-family:cursive;
+  font-style:italic;
+  margin:4em;
+  max-width:30em;
+  padding:2em;
+}
+ </style>
+
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -26,7 +69,7 @@
 	
 	<div id="bookInfo"></div>
 
-	<form method="post" action="/read?actionFlag=1" commandName="insertCmd" name="myform" id="myform" onsubmit="return bookSubmit()">
+	<form:form method="post" action="/read?actionFlag=1" commandName="insertCmd" name="myform" id="myform" onsubmit="return bookSubmit()">
 			<p>
 				독서 상태 : <select id="option" name="option" onChange="bookStatus()">
 					<option value="none">=== 선택 ===</option>
@@ -36,21 +79,19 @@
 				</select> 
 				
 			</p>
-			
-			별점 : 
 				 
-				<div class="star-rating">
-				  <input type="radio" id="5-stars" name="star" value="5" />
-				  <label for="5-stars" class="star">&#9733;</label>
-				  <input type="radio" id="4-stars" name="star" value="4" />
-				  <label for="4-stars" class="star">&#9733;</label>
-				  <input type="radio" id="3-stars" name="star" value="3" />
-				  <label for="3-stars" class="star">&#9733;</label>
-				  <input type="radio" id="2-stars" name="star" value="2" />
-				  <label for="2-stars" class="star">&#9733;</label>
-				  <input type="radio" id="1-star" name="star" value="1" />
-				  <label for="1-star" class="star">&#9733;</label>
-				</div>
+			별점 : 		<div class="star-rating">
+						  <input type="radio" id="5-stars" name="star" value=5 />
+						  <label for="5-stars" class="star">&#9733;</label>
+						  <input type="radio" id="4-stars" name="star" value=4 />
+						  <label for="4-stars" class="star">&#9733;</label>
+						  <input type="radio" id="3-stars" name="star" value=3 />
+						  <label for="3-stars" class="star">&#9733;</label>
+						  <input type="radio" id="2-stars" name="star" value=2 />
+						  <label for="2-stars" class="star">&#9733;</label>
+						  <input type="radio" id="1-star" name="star" value=1 />
+						  <label for="1-star" class="star">&#9733;</label>
+						</div>
 		
 		<p>
 			평가 : <textarea name="book_comment"></textarea>
@@ -65,7 +106,7 @@
 			<input type="hidden" name="query" id="query" value="${query}" /> 
 			<input type="submit" name="button" value="등록">
 			<span id="msg"></span>
-	</form>
+	</form:form>
 
 	
 	<p>
@@ -89,7 +130,7 @@
 				<input type="button" value="삭제" onclick='passCheckForDelete(${commentsByMember.appraisal_num})'>
 				<input type='button' value='수정' onclick='passCheckForUpdate(${commentsByMember.appraisal_num})'/>
 	
-				<form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
+				<form:form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
 					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
 					<input type="hidden" name="query" id="query" value="${query}" /> 
 					<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
@@ -101,14 +142,9 @@
 						<input type="submit" value="확인">
 					</div>
 					
-				</form>
-				
-				<c:if test="${!empty passCheckTrue}">
-					비밀번호 확인이 완료되었습니다. 비밀번호 : ${passCheckTrue}
-					<input type='button' value='평가 수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>		
-				</c:if>
+				</form:form>
 						
-					<form method="post" action="/read?actionFlag=4" commandName="updateCmd" class="mb-3" name="myform" id="myform">
+					<form:form method="post" action="/read?actionFlag=4" commandName="updateCmd" class="mb-3" name="myform" id="myform">
 						<div id="u${commentsByMember.appraisal_num}" style="display:none;">
 								독서 상태 : 
 									<select id="option" name="option">
@@ -118,18 +154,17 @@
 										<option value=2>독서 완료</option>
 									</select> * 평가 작성은 독서 완료 시 가능합니다. 
 									
-									별점 : 
-										<div class="star-rating space-x-4 mx-auto">
-											<input type="radio" id="5-stars" name="rating" value="5" v-model="ratings"/>
-											<label for="5-stars" class="star pr-4">★</label>
-											<input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
-											<label for="4-stars" class="star">★</label>
-											<input type="radio" id="3-stars" name="rating" value="3" v-model="ratings"/>
-											<label for="3-stars" class="star">★</label>
-											<input type="radio" id="2-stars" name="rating" value="2" v-model="ratings"/>
-											<label for="2-stars" class="star">★</label>
-											<input type="radio" id="1-star" name="rating" value="1" v-model="ratings" />
-											<label for="1-star" class="star">★</label>
+							별점 : 		<div class="star-rating">
+										  <input type="radio" id="5-stars" name="star" value=5 />
+										  <label for="5-stars" class="star">&#9733;</label>
+										  <input type="radio" id="4-stars" name="star" value=4 />
+										  <label for="4-stars" class="star">&#9733;</label>
+										  <input type="radio" id="3-stars" name="star" value=3 />
+										  <label for="3-stars" class="star">&#9733;</label>
+										  <input type="radio" id="2-stars" name="star" value=2 />
+										  <label for="2-stars" class="star">&#9733;</label>
+										  <input type="radio" id="1-star" name="star" value=1 />
+										  <label for="1-star" class="star">&#9733;</label>
 										</div>
 						
 					
@@ -146,21 +181,25 @@
 									
 									<input type="submit" value="저장">
 						</div>	
-					</form>
+					</form:form>
 				
-				<form method="post" action="/read?actionFlag=3" commandName="passCheckCmd">
+				<form:form method="post" action="/read?actionFlag=3" commandName="passCheckCmd">
 					<div id="pfu${commentsByMember.appraisal_num}" style="display:none;">
 							 비밀번호 입력 : 
-							<input type="text" name="passCheck" id="passCheck">
+							<input type="password" name="passCheck" id="passCheck">
 							<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
 							<input type="hidden" name="query" id="query" value="${query}" /> 
 							<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
 							<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
 							<input type="submit" value="확인">
 					</div>
-				</form>	
-					
+				</form:form>	
 			</c:forEach>
+			
+			<c:if test="${!empty passCheckTrue}">
+					비밀번호 확인이 완료되었습니다.
+					<input type='button' value='평가 수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>		
+			</c:if>
 		</c:if>
 		
 		
@@ -258,6 +297,8 @@
       			return submitFlag;
       		}
 
+      		
+      		
  	 </script>
 
 </body>
