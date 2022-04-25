@@ -2,25 +2,22 @@ package a.b.c.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import a.b.c.exception.BookStatusOnlyReadingCompleteException;
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
-import a.b.c.model.BookStatusCmd;
 import a.b.c.model.DeleteCmd;
 import a.b.c.model.InsertCmd;
 import a.b.c.model.MemberVO;
@@ -28,7 +25,6 @@ import a.b.c.model.PassCheckCmd;
 import a.b.c.model.UpdateCmd;
 import a.b.c.model.allCommentByBookVO;
 import a.b.c.service.AppraisalService;
-import a.b.c.utils.OnlyReadingComplateValidator;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -73,11 +69,15 @@ public class AppraisalController {
 	/**
 	 * 도서 상세보기
 	 */
+	@ResponseBody
 	@PostMapping("/read")
 	public String writeComment(int actionFlag, Model model, RedirectAttributes rttr,
-			@ModelAttribute("passCheckCmd") PassCheckCmd passCheckCmd, @ModelAttribute("insertCmd") InsertCmd insertCmd,
+			@RequestBody PassCheckCmd passCheckCmd, @ModelAttribute("insertCmd") InsertCmd insertCmd,
 			@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, @ModelAttribute("updateCmd") UpdateCmd updateCmd) throws UnsupportedEncodingException {
 
+		System.out.println("뷰에서 ajax로 넘겨받은 mem_pass : "+passCheckCmd.getMem_pass());
+		System.out.println("뷰에서 ajax로 넘겨받은 passCheck : "+passCheckCmd.getPassCheck());
+		
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
 		Long mem_num = (long) 17; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)

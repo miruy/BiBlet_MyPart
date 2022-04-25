@@ -51,7 +51,6 @@ article {
   padding:2em;
 }
  </style>
-
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -139,11 +138,15 @@ article {
 					<div id="d${commentsByMember.appraisal_num}" style="display:none;">
 						 비밀번호 입력 : 
 						<input type="password" name="passCheck" id="passCheck">
-						<input type="submit" value="확인">
+						<input type="button" value="확인" onClick="passCheckBtn(${commentsByMember.appraisal_num})"/>
 					</div>
-					
 				</form:form>
 						
+<%-- 						<c:if test="${!empty passCheckTrue}"> --%>
+<!-- 								비밀번호 확인이 완료되었습니다. -->
+<%-- 								<input type='button' value='평가 수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>		 --%>
+<%-- 						</c:if> --%>
+			
 					<form:form method="post" action="/read?actionFlag=4" commandName="updateCmd" class="mb-3" name="myform" id="myform">
 						<div id="u${commentsByMember.appraisal_num}" style="display:none;">
 								독서 상태 : 
@@ -195,16 +198,8 @@ article {
 					</div>
 				</form:form>	
 			</c:forEach>
-			
-			<c:if test="${!empty passCheckTrue}">
-					비밀번호 확인이 완료되었습니다.
-					<input type='button' value='평가 수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>		
-			</c:if>
 		</c:if>
-		
-		
 		<script>	
-			
 		
 // 			평가 수정 폼 보여주기
 			function updateComment(app_num) {
@@ -239,7 +234,7 @@ article {
 	            	console.log(msg);
 	                for (var i = 0; i < 10; i++){
 	                    $("div").append("<img src='" + msg.documents[i].thumbnail + "'/><br>");		//표지
-	                    $("div").append("<h2><a href='${pageContext.request.contextPath}/AppraisalPage/read/"+ msg.documents[i].isbn.slice(0, 10)+"?query="+$("#query").val()+ "'>" + msg.documents[i].title + "</a></h2>");	//제목
+	                    $("div").append("<h2><a href='${pageContext.request.contextPath}/read/"+ msg.documents[i].isbn.slice(0, 10)+"?query="+$("#query").val()+ "'>" + msg.documents[i].title + "</a></h2>");	//제목
 	                    $("div").append("<strong>저자:</strong> " + msg.documents[i].authors + "<br>");		//저자	
 	                    $("div").append("<strong>출판사:</strong> " + msg.documents[i].publisher + "<br>");		//출판사
 	                    $("div").append("<strong>줄거리:</strong> " + msg.documents[i].contents + "...<br>");		//줄거리
@@ -296,10 +291,66 @@ article {
       			}
       			return submitFlag;
       		}
-
       		
       		
+   
  	 </script>
+ 	 
+ 	 <script>
+		
+			function passCheckBtn(app_num){
+				
+				let isbn = $("#isbn").val();
+				let query = $("#query").val();
+				
+				$.ajax({
+					url: '<c:url value="/read"/>',
+					type: 'POST',
+					data: JSON.stringify({
+						"app_num": app_num,
+						"passCheck": $("#passCheck").val(),
+						"mem_pass": $("#mem_pass").val()
+					}),
+					dataType: "json",
+					contentType: 'application/json',
+					success: function(data) {
+						console.log("성공");
+					},
+					error:function(data) {
+						console.log("실패");
+					}
+				});
+				
+			}
+ 	 </script>
+
+
+
+<!-- function passCheckBtn(app_num){ -->
+			
+<!-- 				let isbn = $("#isbn").val(); -->
+<!-- 				let query = $("#query").val(); -->
+			
+<!-- 				$.ajax({ -->
+<%-- 					url: '<c:url value=''/read/'+ isbn + '?query=' + query' />', --%>
+<!-- 					type: 'POST', -->
+<!-- 					data: { -->
+<!-- 						'app_num': app_num, -->
+<!-- 						'passCheck': $("#passCheck").val(), -->
+<!-- 						'mem_pass': $("#mem_pass").val() -->
+<!-- 					}, -->
+<!-- 					dataType: "json", -->
+<!-- 					contentType: 'application/json', -->
+<!-- 					success: function(data) { -->
+<!-- 						console.log("컨트롤러로 보냄"); -->
+<!-- 					}, -->
+<!-- 					error:function(data) { -->
+<!-- 						console.log("컨트롤러로 못 보냄"); -->
+<!-- 					} -->
+<!-- 				}); -->
+				
+<!-- 			} -->
+
 
 </body>
 </html>
