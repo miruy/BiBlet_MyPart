@@ -63,8 +63,7 @@ public class AppraisalController {
 
 		// 해당 도서의 대한 모든 평가 불러오기
 		List<allCommentByBookVO> commentsByMembers = appraisalService.findAllComment(isbn);
-		
-		
+
 		model.addAttribute("query", query.split(",")[0]);
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("commentsByMembers", commentsByMembers);
@@ -75,35 +74,34 @@ public class AppraisalController {
 	/**
 	 * 도서 상세보기
 	 */
-	@ResponseBody
-	@PostMapping("/read")
-	public String writeComment(int actionFlag, Model model, RedirectAttributes rttr,
-			 @ModelAttribute("insertCmd") InsertCmd insertCmd,
-			@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, @ModelAttribute("updateCmd") UpdateCmd updateCmd) throws UnsupportedEncodingException {
+//	@ResponseBody
+//	@PostMapping("/read")
+//	public String writeComment(int actionFlag, Model model, RedirectAttributes rttr,
+//			@ModelAttribute("insertCmd") InsertCmd insertCmd, @ModelAttribute("deleteCmd") DeleteCmd deleteCmd,
+//			@ModelAttribute("updateCmd") UpdateCmd updateCmd) throws UnsupportedEncodingException {
+//
+//		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
+//		MemberVO member = new MemberVO();
+//		Long mem_num = (long) 17; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+//		member.setMem_num(mem_num);
 
-		
-		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
-		MemberVO member = new MemberVO();
-		Long mem_num = (long) 17; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
-		member.setMem_num(mem_num);
-
-		String redirectUrl = "";
-		if (actionFlag == 1) {
-
-			String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
-			redirectUrl = writeComment(insertCmd, mem_num) + encodedParam;
-
-			return redirectUrl;
-
-		} else if (actionFlag == 2) {
-			String encodedParam = URLEncoder.encode(deleteCmd.getQuery(), "UTF-8");
-
-			if (deleteCmd.getMem_pass().equals(deleteCmd.getPassCheck())) {
-				redirectUrl = deleteComment(deleteCmd, mem_num) + encodedParam;
-				return redirectUrl;
-			}
-
-		} else if (actionFlag == 3) {
+//		String redirectUrl = "";
+//		if (actionFlag == 1) {
+//
+//			String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
+//			redirectUrl = writeComment(insertCmd, mem_num) + encodedParam;
+//
+//			return redirectUrl;
+//
+//		} else if (actionFlag == 2) {
+//			String encodedParam = URLEncoder.encode(deleteCmd.getQuery(), "UTF-8");
+//
+////			if (deleteCmd.getMem_pass().equals(deleteCmd.getPassCheck())) {
+////				redirectUrl = deleteComment(deleteCmd, mem_num) + encodedParam;
+////				return redirectUrl;
+////			}
+//
+//		} else if (actionFlag == 3) {
 //			String encodedParam = URLEncoder.encode(passCheckCmd.getQuery(), "UTF-8");
 //
 //			if (passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
@@ -112,28 +110,37 @@ public class AppraisalController {
 //				return "redirect:/read/" + passCheckCmd.getIsbn() + "?query=" + encodedParam;
 //			}
 
-		} else if (actionFlag == 4) {
-			String encodedParam = URLEncoder.encode(updateCmd.getQuery(), "UTF-8");
-			redirectUrl = updateComment(updateCmd, mem_num) + encodedParam;
-
-			return redirectUrl;
-		}
-		return redirectUrl;
-	}
+//		} else if (actionFlag == 4) {
+//			String encodedParam = URLEncoder.encode(updateCmd.getQuery(), "UTF-8");
+//			redirectUrl = updateComment(updateCmd, mem_num) + encodedParam;
+//
+//			return redirectUrl;
+//		}
+//		return redirectUrl;
+//	}
 
 	/**
 	 * 평가 저장
 	 */
-	private String writeComment(InsertCmd insertCmd, Long mem_num) {
+	@ResponseBody
+	@PostMapping("/write")
+	private String writeComment(@RequestBody InsertCmd insertCmd) {
+
+		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
+		MemberVO member = new MemberVO();
+		Long mem_num = (long) 17; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		member.setMem_num(mem_num);
+
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
+		
 		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
 
 		bookShelf.setBook_status(insertCmd.getOption());
 		bookShelf.setMem_num(mem_num);
 		bookShelf.setIsbn(insertCmd.getIsbn());
 		bookShelf = appraisalService.insertBookShelf(bookShelf);
-		
+
 		appraisal.setStar(insertCmd.getStar());
 		appraisal.setBook_comment(insertCmd.getBook_comment());
 		appraisal.setStart_date(insertCmd.getStart_date());
@@ -143,7 +150,7 @@ public class AppraisalController {
 
 		appraisalService.writeComment(appraisal);
 
-		return "redirect:/read/" + insertCmd.getIsbn() + "?query=";
+		return "평가 작성 성공";
 	}
 
 	/**
@@ -174,45 +181,27 @@ public class AppraisalController {
 	 */
 	@ResponseBody
 	@PostMapping("/delete")
-	public Long deleteComment(@RequestBody DeleteCmd deleteCmd, Long mem_num) {
+	public Long deleteComment(@RequestBody DeleteCmd deleteCmd) {
 		DeleteCmd deleteComment = new DeleteCmd();
-//		deleteCmd.setIsbn(deleteCmd.getIsbn().substring(0, 10));
-//
-//		deleteComment.setIsbn(deleteCmd.getIsbn());
-//		deleteComment.setMem_num(mem_num);
-//		deleteComment.setBook_status_num(deleteCmd.getBook_status_num());
+
 		deleteComment.setAppraisal_num(deleteCmd.getAppraisal_num());
-		
-		System.out.println("appraisal_num : "+deleteCmd.getAppraisal_num());
+
 		appraisalService.deleteComment(deleteComment);
 
 		return deleteCmd.getAppraisal_num();
 	}
-	
+
 	/**
 	 * 비밀번호 확인
 	 */
 	@ResponseBody
 	@PostMapping("/passCheck")
 	public int passCheck(@RequestBody PassCheckCmd passCheckCmd) {
-		PassCheckCmd passCheck = new PassCheckCmd();
-		
-		
-		System.out.println("뷰에서 ajax로 넘겨받은 mem_pass : "+passCheckCmd.getMem_pass());
-		System.out.println("뷰에서 ajax로 넘겨받은 passCheck : "+passCheckCmd.getPassCheck());
-		System.out.println("isbn"+passCheckCmd.getIsbn() );
-		System.out.println("query"+passCheckCmd.getQuery());
-		System.out.println("appNum: "+passCheckCmd.getAppraisal_num());
-		
-		if(passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
+		if (passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
 			return 1;
-		}else {
+		} else {
 			return 0;
 		}
-		
-		 
-
-		  
 	}
 
 }
