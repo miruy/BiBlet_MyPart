@@ -54,8 +54,8 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 	
 	// 평가 삭제 
 	@Override
-	public void deleteComment(DeleteCmd deleteComment) {
-		sqlSessionTemplate.delete("deleteComment", deleteComment);
+	public void deleteComment(Long app_num) {
+		sqlSessionTemplate.delete("deleteComment", app_num);
 	}
 	
 	// 평가 수정

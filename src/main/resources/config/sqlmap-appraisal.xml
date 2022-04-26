@@ -46,7 +46,7 @@
 	</select>
 	
 	
-	<delete id="deleteComment" parameterType="deleteComment">
+	<delete id="deleteComment" parameterType="Long">
 	DELETE FROM bookshelf WHERE book_status_num=
 	(SELECT book_status_num FROM appraisal WHERE appraisal_num=#{appraisal_num}) 
 	</delete>

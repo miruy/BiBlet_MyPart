@@ -1,13 +1,12 @@
 package a.b.c.controller;
 
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
@@ -99,7 +96,6 @@ public class AppraisalController {
 			String encodedParam = URLEncoder.encode(deleteCmd.getQuery(), "UTF-8");
 
 			if (deleteCmd.getMem_pass().equals(deleteCmd.getPassCheck())) {
-				redirectUrl = deleteComment(deleteCmd, mem_num) + encodedParam;
 				return redirectUrl;
 			}
 
@@ -172,18 +168,21 @@ public class AppraisalController {
 	/**
 	 * 평가 삭제
 	 */
-	public String deleteComment(DeleteCmd deleteCmd, Long mem_num) throws UnsupportedEncodingException {
-		DeleteCmd deleteComment = new DeleteCmd();
-		deleteCmd.setIsbn(deleteCmd.getIsbn().substring(0, 10));
+	@ResponseBody
+	@PostMapping("/delete")
+	public String deleteComment(@RequestParam Map<String, Object> map, Long mem_num) throws UnsupportedEncodingException {
+//		DeleteCmd deleteComment = new DeleteCmd();
+//		deleteCmd.setIsbn(deleteCmd.getIsbn().substring(0, 10));
+//
+//		deleteComment.setIsbn(deleteCmd.getIsbn());
+//		deleteComment.setMem_num(mem_num);
+//		deleteComment.setBook_status_num(deleteCmd.getBook_status_num());
+//		deleteComment.setAppraisal_num(deleteCmd.getAppraisal_num());
+		
+		System.out.println("delete appNum : "+map);
+//		appraisalService.deleteComment(app_num);
 
-		deleteComment.setIsbn(deleteCmd.getIsbn());
-		deleteComment.setMem_num(mem_num);
-		deleteComment.setBook_status_num(deleteCmd.getBook_status_num());
-		deleteComment.setAppraisal_num(deleteCmd.getAppraisal_num());
-
-		appraisalService.deleteComment(deleteComment);
-
-		return "redirect:/read/" + deleteCmd.getIsbn() + "?query=";
+		return "평가 삭제 성공";
 	}
 	
 	/**

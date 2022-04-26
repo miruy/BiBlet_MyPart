@@ -127,8 +127,8 @@ article {
 					비밀번호 : ${commentsByMember.mem_pass}
 				</p>					
 				
-				<input type="button" value="삭제" onclick='deleteComment(${commentsByMember.appraisal_num})'>
-				<input type='button' value='수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>
+				<input type="button" value="삭제" onclick='deleteBtn(${commentsByMember.appraisal_num})'>
+				<input type='button' value='수정' onclick='updateBtn(${commentsByMember.appraisal_num})'/>
 				
 				<form:form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
 					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
@@ -140,7 +140,7 @@ article {
 				<div id="p${commentsByMember.appraisal_num}" style="display:none;">
 						 비밀번호 입력 : 
 						<input type="password" name="passCheck" id="passCheck" />
-						<input type="button" value="확인" onClick="passCheckBtn(${commentsByMember.appraisal_num})"/>
+						<input type="button" value="확인" id="passCheckBtn" onClick="deleteComment(${commentsByMember.appraisal_num})"/>
 				</div>
 <!-- 				<span id="passMsg"></span> -->
 						
@@ -207,7 +207,7 @@ article {
 		</c:if>
 		<script>	
 //		비밀번호 확인	
-		function passCheckBtn(app_num){
+		function passCheck(app_num){
 			
 			let isbn = $("#isbn").val();
 			let query = $("#query").val();
@@ -229,20 +229,40 @@ article {
 				contentType: 'application/json',
 				success: function(data) {
 					if(data == 1){
-					 	alert("비빌번호 일치");
+					 	alert("비밀번호 일치");
+					 	
 					 	//비밀번호 입력 폼 사라지기
 					 	$("#p"+app_num).hide();
 					}else if(data == 0){
-						 alert("비빌번호 불일치");
+						alert("비밀번호 불일치");
+						 
+						//비밀번호 입력 폼 사라지기
+						$("#p"+app_num).hide();
 					}
-				},
-				error:function(data) {
-					 alert(data);
 				}
 			});
 			
 		}
-	}	
+		
+		
+// 		평가 삭제 요청
+		function deleteComment(app_num){
+			$.ajax({
+				url: '<c:url value="/delete"/>',
+				type: 'POST',
+				data: JSON.stringify({
+					"app_num": app_num
+				}),
+				dataType: "json",
+				contentType: 'application/json',
+				success: function(data) {
+			
+					 	alert(JSON.stringify(data));
+				
+				}
+			});
+		}
+		
 	
 // 			평가 수정 폼 보여주기
 			function updateForm(app_num) {
@@ -250,17 +270,21 @@ article {
 			}  
 	
 		
-// 			평가 수정 및 삭제를 위한 비밀번호 입력 폼 
-			function deleteComment(app_num) {
+// 			평가 삭제를 위한 비밀번호 입력 폼 
+			function deleteBtn(app_num) {
 				$("#p"+app_num).toggle();
 				
+				$("#passCheckBtn").click(function(){
+					passCheck(app_num);
+				});
 				
 			}		
 
-// 			평가 수정 및 삭제를 위한 비밀번호 입력 폼 
-			function updateComment(app_num) {
+// 			평가 수정을 위한 비밀번호 입력 폼 
+			function updateBtn(app_num) {
 				$("#p"+app_num).toggle();
 				
+			
 			}
 
 	
