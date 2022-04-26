@@ -207,7 +207,7 @@ article {
 		</c:if>
 		<script>	
 //		비밀번호 확인	
-		function passCheck(app_num){
+		function passCheck(appraisal_num){
 			
 			let isbn = $("#isbn").val();
 			let query = $("#query").val();
@@ -219,7 +219,7 @@ article {
 				url: '<c:url value="/passCheck"/>',
 				type: 'POST',
 				data: JSON.stringify({
-					"app_num": app_num,
+					"appraisal_num": appraisal_num,
 					"passCheck": passCheck,
 					"mem_pass": mem_pass,
 					"isbn": isbn,
@@ -232,12 +232,12 @@ article {
 					 	alert("비밀번호 일치");
 					 	
 					 	//비밀번호 입력 폼 사라지기
-					 	$("#p"+app_num).hide();
+					 	$("#p"+appraisal_num).hide();
 					}else if(data == 0){
 						alert("비밀번호 불일치");
 						 
 						//비밀번호 입력 폼 사라지기
-						$("#p"+app_num).hide();
+						$("#p"+appraisal_num).hide();
 					}
 				}
 			});
@@ -246,18 +246,18 @@ article {
 		
 		
 // 		평가 삭제 요청
-		function deleteComment(app_num){
+		function deleteComment(appraisal_num){
 			$.ajax({
 				url: '<c:url value="/delete"/>',
 				type: 'POST',
 				data: JSON.stringify({
-					"app_num": app_num
+					"appraisal_num": appraisal_num
 				}),
 				dataType: "json",
 				contentType: 'application/json',
 				success: function(data) {
 			
-					 	alert(JSON.stringify(data));
+					location.reload(); 
 				
 				}
 			});
@@ -265,24 +265,24 @@ article {
 		
 	
 // 			평가 수정 폼 보여주기
-			function updateForm(app_num) {
-				 $("#u"+app_num).toggle();
+			function updateForm(appraisal_num) {
+				 $("#u"+appraisal_num).toggle();
 			}  
 	
 		
 // 			평가 삭제를 위한 비밀번호 입력 폼 
-			function deleteBtn(app_num) {
-				$("#p"+app_num).toggle();
+			function deleteBtn(appraisal_num) {
+				$("#p"+appraisal_num).toggle();
 				
 				$("#passCheckBtn").click(function(){
-					passCheck(app_num);
+					passCheck(appraisal_num);
 				});
 				
 			}		
 
 // 			평가 수정을 위한 비밀번호 입력 폼 
-			function updateBtn(app_num) {
-				$("#p"+app_num).toggle();
+			function updateBtn(appraisal_num) {
+				$("#p"+appraisal_num).toggle();
 				
 			
 			}

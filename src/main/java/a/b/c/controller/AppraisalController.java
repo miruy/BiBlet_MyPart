@@ -1,12 +1,13 @@
 package a.b.c.controller;
 
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
@@ -96,6 +99,7 @@ public class AppraisalController {
 			String encodedParam = URLEncoder.encode(deleteCmd.getQuery(), "UTF-8");
 
 			if (deleteCmd.getMem_pass().equals(deleteCmd.getPassCheck())) {
+				redirectUrl = deleteComment(deleteCmd, mem_num) + encodedParam;
 				return redirectUrl;
 			}
 
@@ -170,19 +174,19 @@ public class AppraisalController {
 	 */
 	@ResponseBody
 	@PostMapping("/delete")
-	public String deleteComment(@RequestParam Map<String, Object> map, Long mem_num) throws UnsupportedEncodingException {
-//		DeleteCmd deleteComment = new DeleteCmd();
+	public Long deleteComment(@RequestBody DeleteCmd deleteCmd, Long mem_num) {
+		DeleteCmd deleteComment = new DeleteCmd();
 //		deleteCmd.setIsbn(deleteCmd.getIsbn().substring(0, 10));
 //
 //		deleteComment.setIsbn(deleteCmd.getIsbn());
 //		deleteComment.setMem_num(mem_num);
 //		deleteComment.setBook_status_num(deleteCmd.getBook_status_num());
-//		deleteComment.setAppraisal_num(deleteCmd.getAppraisal_num());
+		deleteComment.setAppraisal_num(deleteCmd.getAppraisal_num());
 		
-		System.out.println("delete appNum : "+map);
-//		appraisalService.deleteComment(app_num);
+		System.out.println("appraisal_num : "+deleteCmd.getAppraisal_num());
+		appraisalService.deleteComment(deleteComment);
 
-		return "평가 삭제 성공";
+		return deleteCmd.getAppraisal_num();
 	}
 	
 	/**
@@ -190,7 +194,7 @@ public class AppraisalController {
 	 */
 	@ResponseBody
 	@PostMapping("/passCheck")
-	public int passCheck(@RequestBody PassCheckCmd passCheckCmd, HttpServletResponse response) {
+	public int passCheck(@RequestBody PassCheckCmd passCheckCmd) {
 		PassCheckCmd passCheck = new PassCheckCmd();
 		
 		
@@ -198,7 +202,7 @@ public class AppraisalController {
 		System.out.println("뷰에서 ajax로 넘겨받은 passCheck : "+passCheckCmd.getPassCheck());
 		System.out.println("isbn"+passCheckCmd.getIsbn() );
 		System.out.println("query"+passCheckCmd.getQuery());
-		System.out.println("appNum: "+passCheckCmd.getApp_num());
+		System.out.println("appNum: "+passCheckCmd.getAppraisal_num());
 		
 		if(passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
 			return 1;

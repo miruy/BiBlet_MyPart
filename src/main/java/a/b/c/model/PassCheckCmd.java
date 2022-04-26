@@ -13,6 +13,6 @@ public class PassCheckCmd {
 	private String passCheck;
 	private String isbn;
 	private String query;
-	private Long app_num;
+	private Long appraisal_num;
 	private String mem_pass;
 }

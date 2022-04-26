@@ -50,8 +50,8 @@ public class AppraisalServiceImpl implements AppraisalService {
 	
 	// 평가 삭제
 	@Override
-	public void deleteComment(Long app_num) {
-		appraisalDAO.deleteComment(app_num);
+	public void deleteComment(DeleteCmd deleteCmd) {
+		appraisalDAO.deleteComment(deleteCmd);
 	}
 	
 	// 평가 수정

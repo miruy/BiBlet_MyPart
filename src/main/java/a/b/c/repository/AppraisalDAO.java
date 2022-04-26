@@ -14,6 +14,6 @@ public interface AppraisalDAO {
 	List<allCommentByBookVO> findAllComment(String isbn);	//해당 도서의 대한 모든 평가 호출
 	int commentCount(String isbn);	//해당 도서의 대한 코멘트 개수 호출
 	BookShelfVO selectBookShelf(BookShelfVO bookShelf);	//독서 상태 호출
-	void deleteComment(Long app_num);	//평가 삭제
+	void deleteComment(DeleteCmd deleteCmd);	//평가 삭제
 	void updateComment(UpdateCmd updateComment);	//평가 수정
 }
