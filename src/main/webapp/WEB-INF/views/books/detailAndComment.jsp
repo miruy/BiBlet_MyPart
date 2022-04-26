@@ -130,17 +130,22 @@ article {
 				<input type="button" value="삭제" onclick='deleteBtn(${commentsByMember.appraisal_num})'>
 				<input type='button' value='수정' onclick='updateBtn(${commentsByMember.appraisal_num})'/>
 				
-				<form:form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
 					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
 					<input type="hidden" name="query" id="query" value="${query}" /> 
 					<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
 					<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
-				</form:form>
+		
 				
-				<div id="p${commentsByMember.appraisal_num}" style="display:none;">
+				<div id="pd${commentsByMember.appraisal_num}" style="display:none;">
 						 비밀번호 입력 : 
-						<input type="password" name="passCheck" id="passCheck" />
-						<input type="button" value="확인" id="passCheckBtn" onClick="deleteComment(${commentsByMember.appraisal_num})"/>
+						<input type="password" name="passCheck" id="passCheckD" />
+						<input type="button" value="확인" id="passCheckBtnD" onClick="passCheckAndDelete(${commentsByMember.appraisal_num})"/>
+				</div>
+				
+				<div id="pu${commentsByMember.appraisal_num}" style="display:none;">
+						 비밀번호 입력 : 
+						<input type="password" name="passCheck" id="passCheckU" />
+						<input type="button" value="확인" id="passCheckBtnU" onClick="passCheckAndUpdate(${commentsByMember.appraisal_num})"/>
 				</div>
 <!-- 				<span id="passMsg"></span> -->
 						
@@ -205,15 +210,21 @@ article {
 					
 			</c:forEach>
 		</c:if>
-		<script>	
-//		비밀번호 확인	
-		function passCheck(appraisal_num){
+		
+		<script>
+		
+//		평가 삭제를 위한 비밀번호 입력 폼 
+		function deleteBtn(appraisal_num) {
+			$("#pd"+appraisal_num).toggle();
+		}
+		
+//		비밀번호 확인 및 평가 삭제	
+		function passCheckAndDelete(appraisal_num){
 			
 			let isbn = $("#isbn").val();
 			let query = $("#query").val();
-			let passCheck = $("#passCheck").val();
+			let passCheck = $("#passCheckD").val();
 			let mem_pass = $("#mem_pass").val();
-			let passMsg = document.getElementById("passMsg");
 			
 			$.ajax({
 				url: '<c:url value="/passCheck"/>',
@@ -230,22 +241,21 @@ article {
 				success: function(data) {
 					if(data == 1){
 					 	alert("비밀번호 일치");
+					 	deleteComment(appraisal_num);
 					 	
 					 	//비밀번호 입력 폼 사라지기
-					 	$("#p"+appraisal_num).hide();
+					 	$("#pd"+appraisal_num).hide();
 					}else if(data == 0){
 						alert("비밀번호 불일치");
-						 
+						
 						//비밀번호 입력 폼 사라지기
-						$("#p"+appraisal_num).hide();
+						$("#pd"+appraisal_num).hide();
 					}
 				}
 			});
-			
 		}
-		
-		
-// 		평가 삭제 요청
+
+// 		평가 삭제 요청		
 		function deleteComment(appraisal_num){
 			$.ajax({
 				url: '<c:url value="/delete"/>',
@@ -256,36 +266,65 @@ article {
 				dataType: "json",
 				contentType: 'application/json',
 				success: function(data) {
-			
 					location.reload(); 
-				
 				}
 			});
 		}
 		
+		
+//			평가 수정을 위한 비밀번호 입력 폼 
+			function updateBtn(appraisal_num) {
+				$("#pu"+appraisal_num).toggle();
+			}		  
 	
+		
+//			비밀번호 확인 및 평가 수정
+			function passCheckAndUpdate(appraisal_num){
+				
+				let isbn = $("#isbn").val();
+				let query = $("#query").val();
+				let passCheck = $("#passCheckU").val();
+				let mem_pass = $("#mem_pass").val();
+				
+				$.ajax({
+					url: '<c:url value="/passCheck"/>',
+					type: 'POST',
+					data: JSON.stringify({
+						"appraisal_num": appraisal_num,
+						"passCheck": passCheck,
+						"mem_pass": mem_pass,
+						"isbn": isbn,
+						"query": query
+					}),
+					dataType: "json",
+					contentType: 'application/json',
+					success: function(data) {
+						if(data == 1){
+						 	alert("비밀번호 일치");
+						 	
+						 	updateForm(appraisal_num);
+						 	
+						 	//비밀번호 입력 폼 사라지기
+						 	$("#pu"+appraisal_num).hide();
+						}else if(data == 0){
+							alert("비밀번호 불일치");
+							
+							//비밀번호 입력 폼 사라지기
+							$("#pu"+appraisal_num).hide();
+						}
+					}
+				});
+				
+			}	
+
 // 			평가 수정 폼 보여주기
 			function updateForm(appraisal_num) {
 				 $("#u"+appraisal_num).toggle();
-			}  
-	
-		
-// 			평가 삭제를 위한 비밀번호 입력 폼 
-			function deleteBtn(appraisal_num) {
-				$("#p"+appraisal_num).toggle();
-				
-				$("#passCheckBtn").click(function(){
-					passCheck(appraisal_num);
-				});
-				
-			}		
-
-// 			평가 수정을 위한 비밀번호 입력 폼 
-			function updateBtn(appraisal_num) {
-				$("#p"+appraisal_num).toggle();
-				
-			
 			}
+
+
+
+
 
 	
 // 		도서 검색 버튼 클릭 시 도서 데이터 요청
