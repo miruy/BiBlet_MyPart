@@ -1,10 +1,13 @@
 package a.b.c.controller;
 
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
@@ -58,7 +63,8 @@ public class AppraisalController {
 
 		// 해당 도서의 대한 모든 평가 불러오기
 		List<allCommentByBookVO> commentsByMembers = appraisalService.findAllComment(isbn);
-
+		
+		
 		model.addAttribute("query", query.split(",")[0]);
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("commentsByMembers", commentsByMembers);
@@ -72,11 +78,9 @@ public class AppraisalController {
 	@ResponseBody
 	@PostMapping("/read")
 	public String writeComment(int actionFlag, Model model, RedirectAttributes rttr,
-			@RequestBody PassCheckCmd passCheckCmd, @ModelAttribute("insertCmd") InsertCmd insertCmd,
+			 @ModelAttribute("insertCmd") InsertCmd insertCmd,
 			@ModelAttribute("deleteCmd") DeleteCmd deleteCmd, @ModelAttribute("updateCmd") UpdateCmd updateCmd) throws UnsupportedEncodingException {
 
-		System.out.println("뷰에서 ajax로 넘겨받은 mem_pass : "+passCheckCmd.getMem_pass());
-		System.out.println("뷰에서 ajax로 넘겨받은 passCheck : "+passCheckCmd.getPassCheck());
 		
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
@@ -100,13 +104,13 @@ public class AppraisalController {
 			}
 
 		} else if (actionFlag == 3) {
-			String encodedParam = URLEncoder.encode(passCheckCmd.getQuery(), "UTF-8");
-
-			if (passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
-				rttr.addFlashAttribute("passCheckTrue", passCheckCmd.getPassCheck());
-
-				return "redirect:/read/" + passCheckCmd.getIsbn() + "?query=" + encodedParam;
-			}
+//			String encodedParam = URLEncoder.encode(passCheckCmd.getQuery(), "UTF-8");
+//
+//			if (passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
+//				rttr.addFlashAttribute("passCheckTrue", passCheckCmd.getPassCheck());
+//
+//				return "redirect:/read/" + passCheckCmd.getIsbn() + "?query=" + encodedParam;
+//			}
 
 		} else if (actionFlag == 4) {
 			String encodedParam = URLEncoder.encode(updateCmd.getQuery(), "UTF-8");
@@ -180,6 +184,32 @@ public class AppraisalController {
 		appraisalService.deleteComment(deleteComment);
 
 		return "redirect:/read/" + deleteCmd.getIsbn() + "?query=";
+	}
+	
+	/**
+	 * 비밀번호 확인
+	 */
+	@ResponseBody
+	@PostMapping("/passCheck")
+	public int passCheck(@RequestBody PassCheckCmd passCheckCmd, HttpServletResponse response) {
+		PassCheckCmd passCheck = new PassCheckCmd();
+		
+		
+		System.out.println("뷰에서 ajax로 넘겨받은 mem_pass : "+passCheckCmd.getMem_pass());
+		System.out.println("뷰에서 ajax로 넘겨받은 passCheck : "+passCheckCmd.getPassCheck());
+		System.out.println("isbn"+passCheckCmd.getIsbn() );
+		System.out.println("query"+passCheckCmd.getQuery());
+		System.out.println("appNum: "+passCheckCmd.getApp_num());
+		
+		if(passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
+			return 1;
+		}else {
+			return 0;
+		}
+		
+		 
+
+		  
 	}
 
 }

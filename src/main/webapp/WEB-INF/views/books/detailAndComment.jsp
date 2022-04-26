@@ -124,30 +124,32 @@ article {
 					시작날짜 : ${commentsByMember.start_date} 
 					다 읽은 날짜 : ${commentsByMember.end_date} 
 					평가 : ${commentsByMember.book_comment}
+					비밀번호 : ${commentsByMember.mem_pass}
 				</p>					
 				
-				<input type="button" value="삭제" onclick='passCheckForDelete(${commentsByMember.appraisal_num})'>
-				<input type='button' value='수정' onclick='passCheckForUpdate(${commentsByMember.appraisal_num})'/>
-	
+				<input type="button" value="삭제" onclick='deleteComment(${commentsByMember.appraisal_num})'>
+				<input type='button' value='수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>
+				
 				<form:form method="post"  action="/read?actionFlag=2" commandName="deleteCmd">
 					<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
 					<input type="hidden" name="query" id="query" value="${query}" /> 
 					<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
 					<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
-					
-					<div id="d${commentsByMember.appraisal_num}" style="display:none;">
-						 비밀번호 입력 : 
-						<input type="password" name="passCheck" id="passCheck">
-						<input type="button" value="확인" onClick="passCheckBtn(${commentsByMember.appraisal_num})"/>
-					</div>
 				</form:form>
+				
+				<div id="p${commentsByMember.appraisal_num}" style="display:none;">
+						 비밀번호 입력 : 
+						<input type="password" name="passCheck" id="passCheck" />
+						<input type="button" value="확인" onClick="passCheckBtn(${commentsByMember.appraisal_num})"/>
+				</div>
+<!-- 				<span id="passMsg"></span> -->
 						
 <%-- 						<c:if test="${!empty passCheckTrue}"> --%>
 <!-- 								비밀번호 확인이 완료되었습니다. -->
 <%-- 								<input type='button' value='평가 수정' onclick='updateComment(${commentsByMember.appraisal_num})'/>		 --%>
 <%-- 						</c:if> --%>
 			
-					<form:form method="post" action="/read?actionFlag=4" commandName="updateCmd" class="mb-3" name="myform" id="myform">
+					<form:form method="post" action="/read?actionFlag=4" commandName="updateCmd" class="bupdateForm3" name="updateForm" id="updateForm">
 						<div id="u${commentsByMember.appraisal_num}" style="display:none;">
 								독서 상태 : 
 									<select id="option" name="option">
@@ -186,37 +188,80 @@ article {
 						</div>	
 					</form:form>
 				
-				<form:form method="post" action="/read?actionFlag=3" commandName="passCheckCmd">
-					<div id="pfu${commentsByMember.appraisal_num}" style="display:none;">
-							 비밀번호 입력 : 
-							<input type="password" name="passCheck" id="passCheck">
-							<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
-							<input type="hidden" name="query" id="query" value="${query}" /> 
-							<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
-							<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
-							<input type="submit" value="확인">
-					</div>
-				</form:form>	
+<%-- 				<form:form method="post" action="/read?actionFlag=3" commandName="passCheckCmd"> --%>
+<%-- 					<div id="pfu${commentsByMember.appraisal_num}" style="display:none;"> --%>
+<!-- 							 비밀번호 입력 :  -->
+<!-- 							<input type="password" name="passCheck" id="passCheck"> -->
+<%-- 							<input type="hidden" name="isbn" id="isbn" value="${isbn}" />  --%>
+<%-- 							<input type="hidden" name="query" id="query" value="${query}" />  --%>
+<%-- 							<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" /> --%>
+<%-- 							<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" /> --%>
+<!-- 							<input type="submit" value="확인"> -->
+<!-- 					</div> -->
+<%-- 				</form:form>	 --%>
+
+					
+				
+					
 			</c:forEach>
 		</c:if>
 		<script>	
-		
+//		비밀번호 확인	
+		function passCheckBtn(app_num){
+			
+			let isbn = $("#isbn").val();
+			let query = $("#query").val();
+			let passCheck = $("#passCheck").val();
+			let mem_pass = $("#mem_pass").val();
+			let passMsg = document.getElementById("passMsg");
+			
+			$.ajax({
+				url: '<c:url value="/passCheck"/>',
+				type: 'POST',
+				data: JSON.stringify({
+					"app_num": app_num,
+					"passCheck": passCheck,
+					"mem_pass": mem_pass,
+					"isbn": isbn,
+					"query": query
+				}),
+				dataType: "json",
+				contentType: 'application/json',
+				success: function(data) {
+					if(data == 1){
+					 	alert("비빌번호 일치");
+					 	//비밀번호 입력 폼 사라지기
+					 	$("#p"+app_num).hide();
+					}else if(data == 0){
+						 alert("비빌번호 불일치");
+					}
+				},
+				error:function(data) {
+					 alert(data);
+				}
+			});
+			
+		}
+	}	
+	
 // 			평가 수정 폼 보여주기
-			function updateComment(app_num) {
+			function updateForm(app_num) {
 				 $("#u"+app_num).toggle();
 			}  
 	
 		
-//			평가 수정을 위한 비밀번호 확인	
-			function passCheckForUpdate(app_num) {
-				 $("#pfu"+app_num).toggle();
-			}  
-		
-		
-// 			평가 삭제를 위한 비밀번호 확인
-			function passCheckForDelete(app_num) {
-				$("#d"+app_num).toggle();
-			}	
+// 			평가 수정 및 삭제를 위한 비밀번호 입력 폼 
+			function deleteComment(app_num) {
+				$("#p"+app_num).toggle();
+				
+				
+			}		
+
+// 			평가 수정 및 삭제를 위한 비밀번호 입력 폼 
+			function updateComment(app_num) {
+				$("#p"+app_num).toggle();
+				
+			}
 
 	
 // 		도서 검색 버튼 클릭 시 도서 데이터 요청
@@ -292,64 +337,12 @@ article {
       			return submitFlag;
       		}
       		
-      		
-   
- 	 </script>
- 	 
- 	 <script>
-		
-			function passCheckBtn(app_num){
-				
-				let isbn = $("#isbn").val();
-				let query = $("#query").val();
-				
-				$.ajax({
-					url: '<c:url value="/read"/>',
-					type: 'POST',
-					data: JSON.stringify({
-						"app_num": app_num,
-						"passCheck": $("#passCheck").val(),
-						"mem_pass": $("#mem_pass").val()
-					}),
-					dataType: "json",
-					contentType: 'application/json',
-					success: function(data) {
-						console.log("성공");
-					},
-					error:function(data) {
-						console.log("실패");
-					}
-				});
-				
-			}
+    
+
+			
  	 </script>
 
 
-
-<!-- function passCheckBtn(app_num){ -->
-			
-<!-- 				let isbn = $("#isbn").val(); -->
-<!-- 				let query = $("#query").val(); -->
-			
-<!-- 				$.ajax({ -->
-<%-- 					url: '<c:url value=''/read/'+ isbn + '?query=' + query' />', --%>
-<!-- 					type: 'POST', -->
-<!-- 					data: { -->
-<!-- 						'app_num': app_num, -->
-<!-- 						'passCheck': $("#passCheck").val(), -->
-<!-- 						'mem_pass': $("#mem_pass").val() -->
-<!-- 					}, -->
-<!-- 					dataType: "json", -->
-<!-- 					contentType: 'application/json', -->
-<!-- 					success: function(data) { -->
-<!-- 						console.log("컨트롤러로 보냄"); -->
-<!-- 					}, -->
-<!-- 					error:function(data) { -->
-<!-- 						console.log("컨트롤러로 못 보냄"); -->
-<!-- 					} -->
-<!-- 				}); -->
-				
-<!-- 			} -->
 
 
 </body>
