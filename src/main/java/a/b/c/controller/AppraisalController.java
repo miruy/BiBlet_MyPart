@@ -120,19 +120,25 @@ public class AppraisalController {
 //	}
 
 	/**
-	 * 평가 저장
+	 * 평가 등록
 	 */
-	@ResponseBody
-	@PostMapping("/write")
-	private String writeComment(@RequestBody InsertCmd insertCmd) {
+	@PostMapping("/read/{isbn}")
+	private String writeComment(@ModelAttribute("insertCmd") InsertCmd insertCmd) throws UnsupportedEncodingException {
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
+		String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
 		
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
 		Long mem_num = (long) 16; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
+		
+		System.out.println("bookComment : "+insertCmd.getBook_comment());
+		
+		
+		
+		
 		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
 
 		bookShelf.setBook_status(insertCmd.getOption());
@@ -146,12 +152,10 @@ public class AppraisalController {
 		appraisal.setEnd_date(insertCmd.getEnd_date());
 		appraisal.setCo_prv(insertCmd.getCo_prv());
 		appraisal.setBook_status_num(bookShelf.getBook_status_num());
-
-		appraisalService.writeComment(appraisal);
 		
-    	String redirectUrl = "read/" + insertCmd.getIsbn() + "?query=" + insertCmd.getQuery();
+		appraisalService.writeComment(appraisal);
     	
-		return redirectUrl;
+		return "redirect:/read/" + insertCmd.getIsbn() + "?query=" + encodedParam;
 	}
 
 	/**
@@ -159,7 +163,7 @@ public class AppraisalController {
 	 */
 	@ResponseBody
 	@PostMapping("/edit")
-	public int updateComment(@RequestBody UpdateCmd updateCmd, Long mem_num) {
+	public String updateComment(@RequestBody UpdateCmd updateCmd, Long mem_num) {
 		UpdateCmd updateAppraisal = new UpdateCmd();
 		updateCmd.setIsbn(updateCmd.getIsbn().substring(0, 10));
 
@@ -175,7 +179,7 @@ public class AppraisalController {
 
 		appraisalService.updateComment(updateAppraisal);
 		
-		return 1;
+		return null;
 	}
 
 	/**
@@ -199,7 +203,6 @@ public class AppraisalController {
 	@ResponseBody
 	@PostMapping("/passCheck")
 	public int passCheck(@RequestBody PassCheckCmd passCheckCmd) {
-		System.out.println("수정 passCheck : "+passCheckCmd.getPassCheck());
 		if (passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
 			return 1;
 		} else {

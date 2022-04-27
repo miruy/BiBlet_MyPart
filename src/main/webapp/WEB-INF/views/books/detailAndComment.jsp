@@ -9,6 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BiBlet 도서 상세/평가</title>
 <style>
+
 .star-rating {
 	border: solid 1px #ccc;
 	display: flex;
@@ -36,18 +37,6 @@
 .star-rating label:hover, .star-rating label:hover ~ label {
 	color: #fc0;
 }
-
-/* explanation */
-article {
-	background-color: #ffe;
-	box-shadow: 0 0 1em 1px rgba(0, 0, 0, .25);
-	color: #006;
-	font-family: cursive;
-	font-style: italic;
-	margin: 4em;
-	max-width: 30em;
-	padding: 2em;
-}
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.js"
 	integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -68,7 +57,7 @@ article {
 
 	<div id="bookInfo"></div>
 
-	<form onsubmit="return bookSubmit()">
+	<form:form method="post" commandName="insertCmd" onsubmit="return bookSubmit()">
 		<p>
 			독서 상태 : <select id="option" name="option" onChange="bookStatus()">
 				<option value="none">=== 선택 ===</option>
@@ -81,15 +70,16 @@ article {
 
 		별점 :
 		<div class="star-rating">
-			<input type="radio" id="5-star" name="starD" value=5 /> <label
-				for="5-star" class="star">&#9733;</label> <input type="radio"
-				id="4-star" name="starD" value=4 /> <label for="4-stars"
-				class="star">&#9733;</label> <input type="radio" id="3-star"
-				name="starD" value=3 /> <label for="3-stars" class="star">&#9733;</label>
-			<input type="radio" id="2-star" name="starD" value=2 /> <label
-				for="2-star" class="star">&#9733;</label> <input type="radio"
-				id="1-star" name="starD" value=1 /> <label for="1-star"
-				class="star">&#9733;</label>
+			<input type="radio" id="5-star" name="star" value=5 /> 
+			<label for="5-star" class="star">&#9733;</label> 
+			<input type="radio" id="4-star" name="star" value=4 /> 
+			<label for="4-star" class="star">&#9733;</label> 
+			<input type="radio" id="3-star" name="star" value=3 /> 
+			<label for="3-star" class="star">&#9733;</label>
+			<input type="radio" id="2-star" name="star" value=2 /> 
+			<label for="2-star" class="star">&#9733;</label> 
+			<input type="radio" id="1-star" name="star" value=1 /> 
+			<label for="1-star" class="star">&#9733;</label>
 		</div>
 
 		<p>
@@ -102,10 +92,11 @@ article {
 		완료 날짜 : <input type="date" id="end_date" name="end_date" /> 공개 : <input
 			type="checkbox" id="co_prv" name="co_prv" value="공개" /> 비공개 : <input
 			type="checkbox" id="co_prv" name="co_prv" value="비공개" /> <input
-			type="hidden" name="isbn" id="isbn" value="${isbn}" /> <input
-			type="button" value="등록" id="writeComment" onClick="writeBtn()" /> <span
-			id="msg"></span>
-	</form>
+			type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
+			<input type="hidden" name="query" id="query" value="${query}" />
+			<input type="submit" value="등록" id="writeComment" /> 
+			<span id="msg"></span>
+	</form:form>
 
 
 	<p>
@@ -122,20 +113,18 @@ article {
 				${commentsByMember.star} 시작날짜 : ${commentsByMember.start_date} 다 읽은
 				날짜 : ${commentsByMember.end_date} 평가 :
 				${commentsByMember.book_comment} 비밀번호 : ${commentsByMember.mem_pass}
+				book_status_num : ${commentsByMember.book_status_num}
 			</p>
 
-			<input type="button" value="삭제"
-				onclick='deleteBtn(${commentsByMember.appraisal_num})'>
-			<input type='button' value='수정'
-				onclick='updateBtn(${commentsByMember.appraisal_num})' />
+			<input type="button" value="삭제" onclick='deleteBtn(${commentsByMember.appraisal_num})'>
+			<input type='button' value='수정' onclick='updateBtn(${commentsByMember.appraisal_num})' />
 
 			<input type="hidden" name="isbn" id="isbn" value="${isbn}" />
 			<input type="hidden" name="query" id="query" value="${query}" />
-			<input type="hidden" name="appraisal_num" id="appraisal_num"
-				value="${commentsByMember.appraisal_num}" />
-			<input type="hidden" name="mem_pass" id="mem_pass"
-				value="${commentsByMember.mem_pass}" />
-
+			<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
+			<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
+			<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
+			
 			<div id="pd${commentsByMember.appraisal_num}"></div>
 			<div id="pu${commentsByMember.appraisal_num}"></div>
 
@@ -262,10 +251,14 @@ article {
 	
 // 			평가 수정 폼 보여주기
 			function updateForm(appraisal_num) {
+				let book_status_num = $("#book_status_num").val();
+				
+				console.log(book_status_num);
+				
 				 $("#u"+appraisal_num).html(
 				 
 				 '<p>독서 상태 : '+ 
-					 '<select id="option" name="option" onChange="bookStatus()">'+
+					 '<select id="optionU" name="option" onChange="bookStatus()">'+
 						'<option value="none">=== 선택 ===</option>'+
 						'<option value=0>찜</option>'+
 						'<option value=1>보는 중</option>'+
@@ -276,31 +269,31 @@ article {
 
 				'별점 :'+
 				'<div class="star-rating">'+
-					'<input type="radio" id="5-star" name="starU" value=5 />'+ 
+					'<input type="radio" id="5-star" name="star" value=5 />'+ 
 					'<label for="5-star" class="star">&#9733;</label>'+
-					'<input type="radio"id="4-stars" name="starU" value=4 />'+
+					'<input type="radio"id="4-stars" name="star" value=4 />'+
 					'<label for="4-star" class="star">&#9733;</label>'+ 
-					'<input type="radio" id="3-stars" name="starU" value=3 />'+ 
+					'<input type="radio" id="3-stars" name="star" value=3 />'+ 
 					'<label for="3-star" class="star">&#9733;</label>'+
-					'<input type="radio" id="2-stars" name="starU" value=2 />'+ 
+					'<input type="radio" id="2-stars" name="star" value=2 />'+ 
 					'<label for="2-star" class="star">&#9733;</label>'+ 
-					'<input type="radio" id="1-star" name="starU" value=1 />'+
+					'<input type="radio" id="1-star" name="star" value=1 />'+
 					'<label for="1-star" class="star">&#9733;</label>'+
 				'</div>'+
 
 				'<p>'+
 					'평가 :'+
-					'<textarea id="book_comment" name="book_comment"></textarea>'+
+					'<textarea id="book_commentU" name="book_comment"></textarea>'+
 				'</p>'+
 
 
-				'구독 시작 날짜 : <input type="date" id="start_date" name="start_date" />'+
-				'구독 완료 날짜 : <input type="date" id="end_date" name="end_date" />'+
+				'구독 시작 날짜 : <input type="date" id="start_dateU" name="start_date" />'+
+				'구독 완료 날짜 : <input type="date" id="end_dateU" name="end_date" />'+
 				'공개 : <input type="checkbox" id="co_prv" name="co_prv" value="공개" />'+
 				'비공개 : <input type="checkbox" id="co_prv" name="co_prv" value="비공개" />'+
-
+				
 				'<input type="hidden" name="appraisal_num" id="appraisal_num" value="'+ appraisal_num +'" />'+ 
-				'<input type="hidden" name="book_status_num" id="book_status_num" value="'+ appraisal_num +'" />'+ 
+				'<input type="hidden" name="book_status_num" id="book_status_num" value="'+ book_status_num +'" />'+ 
 				'<input type="button" value="등록" id="updateComment" onClick="updateComment('+ appraisal_num +')" />'
 					);
 			}
@@ -309,11 +302,11 @@ article {
 // 			평가 수정
 			function updateComment(){
 				let isbn = $("#isbn").val();
-				let option = $("#option").val();
-				let star = $("input[name=starU]").val();
-				let book_comment = $("#book_comment").val();
-				let start_date = $("#start_date").val();
-				let end_date = $("#end_date").val();
+				let option = $("#optionU").val();
+				let star = $("input[name=star]").val();
+				let book_comment = $("#book_commentU").val();
+				let start_date = $("#start_dateU").val();
+				let end_date = $("#end_dateU").val();
 				let co_prv = $("#co_prv").val();
 				let query = $("#query").val();
 				let appraisal_num = $("#appraisal_num").val();
@@ -324,11 +317,11 @@ article {
 					type: 'POST',
 					data: JSON.stringify({
 						"isbn": isbn,
-						"option": option,
-						"star": star,
-						"book_comment": book_comment,
-						"start_date": start_date,
-						"end_date": end_date,
+						"option": option,	//
+						"star": star,	//
+						"book_comment": book_comment,	//
+						"start_date": start_date,	//
+						"end_date": end_date,	//
 						"co_prv": co_prv,
 						"query": query,
 						"appraisal_num": appraisal_num,
@@ -337,48 +330,7 @@ article {
 					dataType: "json",
 					contentType: 'application/json',
 					success: function(data) {
-						if(data == 1){
-							console.log("수정 성공");
 						location.reload(); 
-						}else if(data != 1){
-							console.log("수정 실패");
-						}
-					}
-				});
-			}
-
-// 			# 평가 작성	
-			function writeBtn(){
-
-				let isbn = $("#isbn").val();
-				let option = $("#option").val();
-				let star = $("input[name=starI]").val();
-				let book_comment = $("#book_comment").val();
-				let start_date = $("#start_date").val();
-				let end_date = $("#end_date").val();
-				let co_prv = $("#co_prv").val();
-				let query = $("#query").val();
-				
-				$.ajax({
-					url: '<c:url value="/write"/>',
-					type: 'POST',
-					data: JSON.stringify({
-						"isbn": isbn,
-						"option": option,
-						"star": star,
-						"book_comment": book_comment,
-						"start_date": start_date,
-						"end_date": end_date,
-						"co_prv": co_prv,
-						"query": query
-					}),
-					dataType: "json",
-					contentType: 'application/json',
-					success: function(data) {
-						location.reload(); 
-					},
-					error: function(e){
-						location.reload();
 					}
 				});
 			}
