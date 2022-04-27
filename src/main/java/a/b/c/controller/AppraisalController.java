@@ -149,15 +149,17 @@ public class AppraisalController {
 
 		appraisalService.writeComment(appraisal);
 		
-    	String redirectUrl = "redirect:/read/" + insertCmd.getIsbn() + "?query=" + insertCmd.getQuery();
+    	String redirectUrl = "read/" + insertCmd.getIsbn() + "?query=" + insertCmd.getQuery();
     	
 		return redirectUrl;
 	}
 
 	/**
-	 * 평가 수정3
+	 * 평가 수정
 	 */
-	public String updateComment(UpdateCmd updateCmd, Long mem_num) {
+	@ResponseBody
+	@PostMapping("/edit")
+	public int updateComment(@RequestBody UpdateCmd updateCmd, Long mem_num) {
 		UpdateCmd updateAppraisal = new UpdateCmd();
 		updateCmd.setIsbn(updateCmd.getIsbn().substring(0, 10));
 
@@ -170,11 +172,10 @@ public class AppraisalController {
 		updateAppraisal.setEnd_date(updateCmd.getEnd_date());
 		updateAppraisal.setCo_prv(updateCmd.getCo_prv());
 		updateAppraisal.setBook_status_num(updateCmd.getBook_status_num());
-		System.out.println("뷰에서 가져온 상태번호" + updateAppraisal.getBook_status_num());
 
 		appraisalService.updateComment(updateAppraisal);
-		System.out.println("평가 수정 성공");
-		return "redirect:/read/" + updateCmd.getIsbn() + "?query=";
+		
+		return 1;
 	}
 
 	/**
@@ -198,6 +199,7 @@ public class AppraisalController {
 	@ResponseBody
 	@PostMapping("/passCheck")
 	public int passCheck(@RequestBody PassCheckCmd passCheckCmd) {
+		System.out.println("수정 passCheck : "+passCheckCmd.getPassCheck());
 		if (passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
 			return 1;
 		} else {
