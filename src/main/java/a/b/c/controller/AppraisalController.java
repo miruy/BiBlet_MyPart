@@ -125,15 +125,14 @@ public class AppraisalController {
 	@ResponseBody
 	@PostMapping("/write")
 	private String writeComment(@RequestBody InsertCmd insertCmd) {
-
-		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
-		MemberVO member = new MemberVO();
-		Long mem_num = (long) 17; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
-		member.setMem_num(mem_num);
-
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
 		
+		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
+		MemberVO member = new MemberVO();
+		Long mem_num = (long) 16; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		member.setMem_num(mem_num);
+
 		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
 
 		bookShelf.setBook_status(insertCmd.getOption());
@@ -149,12 +148,14 @@ public class AppraisalController {
 		appraisal.setBook_status_num(bookShelf.getBook_status_num());
 
 		appraisalService.writeComment(appraisal);
-
-		return "평가 작성 성공";
+		
+    	String redirectUrl = "redirect:/read/" + insertCmd.getIsbn() + "?query=" + insertCmd.getQuery();
+    	
+		return redirectUrl;
 	}
 
 	/**
-	 * 평가 수정
+	 * 평가 수정3
 	 */
 	public String updateComment(UpdateCmd updateCmd, Long mem_num) {
 		UpdateCmd updateAppraisal = new UpdateCmd();

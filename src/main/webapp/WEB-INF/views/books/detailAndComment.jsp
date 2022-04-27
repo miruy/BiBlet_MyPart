@@ -113,6 +113,7 @@ article {
 		</c:if>
 	</p>
 	
+	
 		<c:if test="${!empty commentsByMembers}">
 			<c:forEach var="commentsByMember" items="${commentsByMembers}">
 				<p>
@@ -147,47 +148,56 @@ article {
 						<input type="button" value="확인" id="passCheckBtnU" onClick="passCheckAndUpdate(${commentsByMember.appraisal_num})"/>
 				</div>
 			
-					<form:form method="post" action="/read?actionFlag=4" commandName="updateCmd"  name="updateForm" id="updateForm">
+					<form name="updateForm" id="updateForm">
 						<div id="u${commentsByMember.appraisal_num}" style="display:none;">
-								독서 상태 : 
-									<select id="option" name="option">
+							
+							
+							
+								<p>
+									독서 상태 : <select id="option" name="option" onChange="bookStatus()">
 										<option value="none">=== 선택 ===</option>
 										<option value=0>찜</option>
 										<option value=1>보는 중</option>
 										<option value=2>독서 완료</option>
-									</select> * 평가 작성은 독서 완료 시 가능합니다. 
+									</select> 
 									
-							별점 : 		<div class="star-rating">
-										  <input type="radio" id="5-stars" name="star" value=5 />
-										  <label for="5-stars" class="star">&#9733;</label>
-										  <input type="radio" id="4-stars" name="star" value=4 />
-										  <label for="4-stars" class="star">&#9733;</label>
-										  <input type="radio" id="3-stars" name="star" value=3 />
-										  <label for="3-stars" class="star">&#9733;</label>
-										  <input type="radio" id="2-stars" name="star" value=2 />
-										  <label for="2-stars" class="star">&#9733;</label>
-										  <input type="radio" id="1-star" name="star" value=1 />
-										  <label for="1-star" class="star">&#9733;</label>
+								</p>
+									 
+							 	별점 :	<div class="star-rating">
+											   <input type="radio" id="5-star" name="star" value=5 />
+											   <label for="5-stars" class="star">&#9733;</label>
+											   <input type="radio" id="4-stars" name="star" value=4 />
+											   <label for="4-stars" class="star">&#9733;</label>
+											   <input type="radio" id="3-stars" name="star" value=3 />
+											   <label for="3-stars" class="star">&#9733;</label>
+											   <input type="radio" id="2-stars" name="star" value=2 />
+											   <label for="2-stars" class="star">&#9733;</label>
+											   <input type="radio" id="1-star" name="star" value=1 />
+											   <label for="1-star" class="star">&#9733;</label>
 										</div>
-						
+								
+								<p>
+									평가 : <textarea id="book_comment" name="book_comment"></textarea>
+								</p>
 					
-									평가 : <textarea name="book_comment"></textarea>
 					
-									구독 시작 날짜 : <input type="date" name="start_date" /> 
-									구독 완료 날짜 : <input type="date" name="end_date" />
-									공개 : <input type="checkbox" name="co_prv" value="공개" />
-									비공개 : <input type="checkbox" name="co_prv" value="비공개" />
-									<input type="hidden" name="isbn" id="isbn" value="${isbn}" /> 
-									<input type="hidden" name="query" id="query" value="${query}" /> 
-									<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
-									<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
+								구독 시작 날짜 : <input type="date" id="start_date" name="start_date" /> 
+								구독 완료 날짜 : <input type="date" id="end_date"  name="end_date"/>
+								공개 : <input type="checkbox" id="co_prv" name="co_prv" value="공개" />
+								비공개 : <input type="checkbox" id="co_prv" name="co_prv" value="비공개" />
+								<input type="hidden" name="isbn" id="isbn" value="${isbn}" />
+								<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
+								<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
+								<input type="button" value="등록" id="updateComment" onClick="updateComment()" />
+							
+							
+							
+							
 									
-									<input type="submit" value="저장">
 						</div>	
-					</form:form>
+					</form>
 			</c:forEach>
 		</c:if>
-		
 		<script>
 		
 //		평가 삭제를 위한 비밀번호 입력 폼 
@@ -298,6 +308,18 @@ article {
 				 $("#u"+appraisal_num).toggle();
 			}
 
+// 			평가 수정
+			function updateComment(){
+				let isbn = $("#isbn").val();
+				let option = $("#option").val();
+				let star = $("input[name=star]").val();
+				let book_comment = $("#book_comment").val();
+				let start_date = $("#start_date").val();
+				let end_date = $("#end_date").val();
+				let co_prv = $("#co_prv").val();
+				let query = $("#query").val();
+				추가하기!
+			}
 
 // 			평가 작성	
 			function writeBtn(){
@@ -309,6 +331,7 @@ article {
 				let start_date = $("#start_date").val();
 				let end_date = $("#end_date").val();
 				let co_prv = $("#co_prv").val();
+				let query = $("#query").val();
 				
 				$.ajax({
 					url: '<c:url value="/write"/>',
@@ -320,12 +343,13 @@ article {
 						"book_comment": book_comment,
 						"start_date": start_date,
 						"end_date": end_date,
-						"co_prv": co_prv
+						"co_prv": co_prv,
+						"query": query
 					}),
 					dataType: "json",
 					contentType: 'application/json',
 					success: function(data) {
-						location.reload(true);
+						location.reload(); 
 					}
 				});
 			}
