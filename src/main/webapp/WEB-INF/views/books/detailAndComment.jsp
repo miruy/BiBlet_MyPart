@@ -317,11 +317,11 @@
 					type: 'POST',
 					data: JSON.stringify({
 						"isbn": isbn,
-						"option": option,	//
-						"star": star,	//
-						"book_comment": book_comment,	//
-						"start_date": start_date,	//
-						"end_date": end_date,	//
+						"option": option,	
+						"star": star,	
+						"book_comment": book_comment,	
+						"start_date": start_date,	
+						"end_date": end_date,	
 						"co_prv": co_prv,
 						"query": query,
 						"appraisal_num": appraisal_num,

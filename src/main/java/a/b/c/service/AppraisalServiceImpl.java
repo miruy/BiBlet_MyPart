@@ -59,6 +59,12 @@ public class AppraisalServiceImpl implements AppraisalService {
 	public void updateComment(UpdateCmd updateComment) {
 		appraisalDAO.updateComment(updateComment);
 	}
+	
+	//한 회원이 작성한 모든 평가 호출
+	@Override
+	public List<allCommentByBookVO> selectMemComment(Long mem_num){
+		return appraisalDAO.selectMemComment(mem_num);
+	}
 }
 
 

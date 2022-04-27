@@ -63,4 +63,11 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 	public void updateComment(UpdateCmd updateAppraisal) {
 		sqlSessionTemplate.update("updateComment", updateAppraisal);
 	}
+	
+	//한 회원이 작성한 모든 평가 호출
+	@Override
+	public List<allCommentByBookVO> selectMemComment(Long mem_num){
+		return sqlSessionTemplate.selectList("selectMemComment", mem_num);
+		
+	}
 }

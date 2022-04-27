@@ -1,13 +1,8 @@
 package a.b.c.controller;
 
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import a.b.c.model.AppraisalVO;
 import a.b.c.model.BookShelfVO;
@@ -72,54 +64,6 @@ public class AppraisalController {
 	}
 
 	/**
-	 * 도서 상세보기
-	 */
-//	@ResponseBody
-//	@PostMapping("/read")
-//	public String writeComment(int actionFlag, Model model, RedirectAttributes rttr,
-//			@ModelAttribute("insertCmd") InsertCmd insertCmd, @ModelAttribute("deleteCmd") DeleteCmd deleteCmd,
-//			@ModelAttribute("updateCmd") UpdateCmd updateCmd) throws UnsupportedEncodingException {
-//
-//		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
-//		MemberVO member = new MemberVO();
-//		Long mem_num = (long) 17; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
-//		member.setMem_num(mem_num);
-
-//		String redirectUrl = "";
-//		if (actionFlag == 1) {
-//
-//			String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
-//			redirectUrl = writeComment(insertCmd, mem_num) + encodedParam;
-//
-//			return redirectUrl;
-//
-//		} else if (actionFlag == 2) {
-//			String encodedParam = URLEncoder.encode(deleteCmd.getQuery(), "UTF-8");
-//
-////			if (deleteCmd.getMem_pass().equals(deleteCmd.getPassCheck())) {
-////				redirectUrl = deleteComment(deleteCmd, mem_num) + encodedParam;
-////				return redirectUrl;
-////			}
-//
-//		} else if (actionFlag == 3) {
-//			String encodedParam = URLEncoder.encode(passCheckCmd.getQuery(), "UTF-8");
-//
-//			if (passCheckCmd.getMem_pass().equals(passCheckCmd.getPassCheck())) {
-//				rttr.addFlashAttribute("passCheckTrue", passCheckCmd.getPassCheck());
-//
-//				return "redirect:/read/" + passCheckCmd.getIsbn() + "?query=" + encodedParam;
-//			}
-
-//		} else if (actionFlag == 4) {
-//			String encodedParam = URLEncoder.encode(updateCmd.getQuery(), "UTF-8");
-//			redirectUrl = updateComment(updateCmd, mem_num) + encodedParam;
-//
-//			return redirectUrl;
-//		}
-//		return redirectUrl;
-//	}
-
-	/**
 	 * 평가 등록
 	 */
 	@PostMapping("/read/{isbn}")
@@ -133,12 +77,6 @@ public class AppraisalController {
 		Long mem_num = (long) 16; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
-		
-		System.out.println("bookComment : "+insertCmd.getBook_comment());
-		
-		
-		
-		
 		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
 
 		bookShelf.setBook_status(insertCmd.getOption());

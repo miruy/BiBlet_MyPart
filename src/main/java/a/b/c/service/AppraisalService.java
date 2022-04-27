@@ -16,4 +16,5 @@ public interface AppraisalService {
 	int commentCount(String isbn); 		//해당 도서의 대한 평가 개수 호출
 	void deleteComment(DeleteCmd deleteCmd);	//평가 삭제 
 	void updateComment(UpdateCmd updateComment); 	//평가 수정
+	List<allCommentByBookVO> selectMemComment(Long mem_num);	//한 회원이 작성한 모든 평가 호출
 }
