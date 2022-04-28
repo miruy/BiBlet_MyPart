@@ -35,23 +35,34 @@ public class BookShelfController {
 		MemberVO member = new MemberVO();
 
 		member.setMem_num(mem_num);
-		
-		// 해당 도서의 대한 찜 개수
+
+		// 한 회원의 '찜' 도서 개수
 		int memLikeCount = appraisalService.memLikeCount(member.getMem_num());
-		
-		// 해당 도서의 대한 보는 중 개수
+		// 한 회원의 '찜' 도서 isbn 검색
+		List<String> likeIsbn = appraisalService.likeIsbn(mem_num);
+
+		// 한 회원의 '보는 중' 도서 개수
 		int memLeadingCount = appraisalService.memLeadingCount(member.getMem_num());
-		
-		// 해당 도서의 대한 평가 개수 (독서완료)
+		// 한 회원의 '보는 중' 도서 isbn 검색
+		List<String> leadingIsbn = appraisalService.leadingIsbn(mem_num);
+
+		// 한 회원의 '독서 완료' 도서 개수
 		int memCommentCount = appraisalService.memCommentCount(member.getMem_num());
+		// 한 회원의 '독서 완료' 도서 isbn 검색
+		List<String> completeIsbn = appraisalService.completeIsbn(mem_num);
 
 //		한 회원이 작성한 모든 평가 불러오기 
 		List<allCommentByBookVO> memComment = appraisalService.selectMemComment(mem_num);
 
 		model.addAttribute("MyLikeCount", memLikeCount);
+		model.addAttribute("likeIsbn", likeIsbn);
+
 		model.addAttribute("MyLeadingCount", memLeadingCount);
+		model.addAttribute("leadingIsbn", leadingIsbn);
+
 		model.addAttribute("MyCommentCount", memCommentCount);
 		model.addAttribute("MyComment", memComment);
+		model.addAttribute("completeIsbn", completeIsbn);
 		return "bookShelf";
 	}
 

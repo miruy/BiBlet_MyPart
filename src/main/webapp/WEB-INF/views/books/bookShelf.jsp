@@ -17,6 +17,12 @@
 	내 찜 수 : ${MyLikeCount}
 	</c:if>
 	</p>
+	
+	<p>
+	<c:if test="${!empty likeIsbn}">
+	테스트 : ${likeIsbn}
+	</c:if>
+	</p>
 		
 	<p>
 	<h2>보는 중</h2>
@@ -25,7 +31,11 @@
 	</c:if>
 	</p>
 	
-	
+	<p>
+	<c:if test="${!empty leadingIsbn}">
+	테스트 : ${leadingIsbn}
+	</c:if>
+	</p>
 	
 	<h2>독서 완료</h2>
 	<c:if test="${!empty MyCommentCount}">
@@ -42,6 +52,12 @@
 			</c:forEach>
 		</p>	
 	</c:if>
+
+	<p>
+	<c:if test="${!empty completeIsbn}">
+	테스트 : ${completeIsbn}
+	</c:if>
+	</p>
 
 	
 </body>

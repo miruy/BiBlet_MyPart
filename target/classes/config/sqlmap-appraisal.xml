@@ -86,9 +86,22 @@
 	SELECT COUNT(*) FROM bookshelf WHERE book_status=0 AND mem_num=#{mem_num}
 	</select>
 	
+	<select id="likeIsbn" parameterType="Long" resultType="String">
+	SELECT isbn FROM bookshelf WHERE book_status=0 AND mem_num=#{mem_num}
+	</select>
+	
 	<select id="memLeadingCount" parameterType="Long" resultType="Integer">
 	SELECT COUNT(*) FROM bookshelf WHERE book_status=1 AND mem_num=#{mem_num}
 	</select>
+	
+	<select id="leadingIsbn" parameterType="Long" resultType="String">
+	SELECT isbn FROM bookshelf WHERE book_status=1 AND mem_num=#{mem_num}
+	</select>
+	
+	<select id="completeIsbn" parameterType="Long" resultType="String">
+	SELECT isbn FROM bookshelf WHERE book_status=2 AND mem_num=#{mem_num}
+	</select>
+	
 </mapper>
 
 

@@ -13,7 +13,6 @@ import a.b.c.model.allCommentByBookVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class AppraisalDAOImpl implements AppraisalDAO {
@@ -69,21 +68,40 @@ public class AppraisalDAOImpl implements AppraisalDAO {
 		return sqlSessionTemplate.selectList("selectMemComment", mem_num);
 	}
 
-	//	한 회원이 작성한 모든 평가 개수 호출
+	// 한 회원의 '독서 완료' 도서 개수 호출
 	@Override
 	public int memCommentCount(Long mem_num) {
 		return sqlSessionTemplate.selectOne("memCommentCount", mem_num);
 	}
-	
-	// 해당 도서의 대한 찜 개수 호출
+
+	// 한 회원의 '찜' 도서 개수 호출
 	@Override
 	public int memLikeCount(Long mem_num) {
 		return sqlSessionTemplate.selectOne("memLikeCount", mem_num);
 	}
-	
-	//해당 도서의 대한 보는 중 개수 호출
+
+	// 한 회원의 '보는 중' 도서 개수 호출
 	@Override
 	public int memLeadingCount(Long mem_num) {
 		return sqlSessionTemplate.selectOne("memLeadingCount", mem_num);
 	}
+
+	// 한 회원의 '찜' 도서 isbn 호출
+	@Override
+	public List<String> likeIsbn(Long mem_num) {
+		return sqlSessionTemplate.selectList("likeIsbn", mem_num);
+	}
+
+	// 한 회원의 '보는 중' 도서 isbn 호출
+	@Override
+	public List<String> leadingIsbn(Long mem_num) {
+		return sqlSessionTemplate.selectList("leadingIsbn", mem_num);
+	}
+
+	// 한 회원의 '독서 완료' 도서 isbn 호출
+	@Override
+	public List<String> completeIsbn(Long mem_num) {
+		return sqlSessionTemplate.selectList("completeIsbn", mem_num);
+	}
+
 }
