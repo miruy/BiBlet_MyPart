@@ -58,6 +58,7 @@
 	<div id="bookInfo"></div>
 
 	<form:form method="post" commandName="insertCmd" onsubmit="return bookSubmit()">
+		* 독서 완료 시에만 평가 작성이 가능합니다.
 		<p>
 			독서 상태 : <select id="option" name="option" onChange="bookStatus()">
 				<option value="none">=== 선택 ===</option>
@@ -65,7 +66,7 @@
 				<option value=1>보는 중</option>
 				<option value=2>독서 완료</option>
 			</select>
-
+		<input type="button" value="등록" onclick="insertStatus()">
 		</p>
 
 		별점 :
@@ -134,10 +135,31 @@
 	</c:if>
 
 	<script>
+// 		# '찜', '보는 중' 등록
+		function insertStatus(){
+			let option = $("#option").val();
+			let isbn = $("#isbn").val();
+			
+			$.ajax({
+				url: '<c:url value="/insertStatus"/>',
+				type: 'POST',
+				data: JSON.stringify({
+					"option": option,
+					"isbn": isbn
+				}),
+				dataType: "json",
+				contentType: 'application/json',
+				success: function(data) {
+					location.reload(); 
+				}, error: function(){
+					location.reload(); 
+				}
+
+			});
+		}
 		
 // 		# 평가 삭제를 위한 비밀번호 입력 폼 
 		function deleteBtn(appraisal_num) {
-		console.log(appraisal_num);
 			$("#pd"+appraisal_num).html(
 			'비밀번호 입력 : '+
 			'<input type="password" name="passCheck" id="passCheck" />'+
@@ -167,13 +189,13 @@
 				contentType: 'application/json',
 				success: function(data) {
 					if(data == 1){
-					 	alert("비밀번호 일치");
+					 	alert("비밀번호가 확인되었습니다.");
 					 	deleteComment(appraisal_num);
 					 	
 					 	//비밀번호 입력 폼 사라지기
 					 	$("#pd"+appraisal_num).hide();
 					}else if(data == 0){
-						alert("비밀번호 불일치");
+						alert("비밀번호가 일치하지 않습니다.");
 						
 						//비밀번호 입력 폼 사라지기
 						$("#pd"+appraisal_num).html('');
@@ -232,14 +254,14 @@
 					success: function(data) {
 						console.log(data);
  						if(data == 1){
-						 	alert("비밀번호 일치");
+						 	alert("비밀번호가 확인되었습니다.");
 						 	
   						 	updateForm(appraisal_num);
 						 	
  						 	//비밀번호 입력 폼 사라지기
  						 	$("#pu"+appraisal_num).hide();
  						}else if(data == 0){
- 							alert("비밀번호 불일치");
+ 							alert("비밀번호가 일치하지 않습니다.");
 							
  							//비밀번호 입력 폼 사라지기
  							$("#pu"+appraisal_num).html('');
@@ -252,8 +274,6 @@
 // 			평가 수정 폼 보여주기
 			function updateForm(appraisal_num) {
 				let book_status_num = $("#book_status_num").val();
-				
-				console.log(book_status_num);
 				
 				 $("#u"+appraisal_num).html(
 				 

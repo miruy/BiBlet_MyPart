@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,14 +68,14 @@ public class AppraisalController {
 	 * 평가 등록
 	 */
 	@PostMapping("/read/{isbn}")
-	private String writeComment(@ModelAttribute("insertCmd") InsertCmd insertCmd) throws UnsupportedEncodingException {
+	private void writeComment(@ModelAttribute("insertCmd") InsertCmd insertCmd) throws UnsupportedEncodingException {
 		AppraisalVO appraisal = new AppraisalVO();
 		BookShelfVO bookShelf = new BookShelfVO();
 		String encodedParam = URLEncoder.encode(insertCmd.getQuery(), "UTF-8");
-		
+
 		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
 		MemberVO member = new MemberVO();
-		Long mem_num = (long) 16; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		Long mem_num = (long) 1; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
 		member.setMem_num(mem_num);
 
 		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
@@ -90,10 +91,8 @@ public class AppraisalController {
 		appraisal.setEnd_date(insertCmd.getEnd_date());
 		appraisal.setCo_prv(insertCmd.getCo_prv());
 		appraisal.setBook_status_num(bookShelf.getBook_status_num());
-		
+
 		appraisalService.writeComment(appraisal);
-    	
-		return "redirect:/read/" + insertCmd.getIsbn() + "?query=" + encodedParam;
 	}
 
 	/**
@@ -101,7 +100,7 @@ public class AppraisalController {
 	 */
 	@ResponseBody
 	@PostMapping("/edit")
-	public String updateComment(@RequestBody UpdateCmd updateCmd, Long mem_num) {
+	public void updateComment(@RequestBody UpdateCmd updateCmd, Long mem_num) {
 		UpdateCmd updateAppraisal = new UpdateCmd();
 		updateCmd.setIsbn(updateCmd.getIsbn().substring(0, 10));
 
@@ -116,8 +115,6 @@ public class AppraisalController {
 		updateAppraisal.setBook_status_num(updateCmd.getBook_status_num());
 
 		appraisalService.updateComment(updateAppraisal);
-		
-		return null;
 	}
 
 	/**
@@ -125,14 +122,12 @@ public class AppraisalController {
 	 */
 	@ResponseBody
 	@PostMapping("/delete")
-	public Long deleteComment(@RequestBody DeleteCmd deleteCmd) {
+	public void deleteComment(@RequestBody DeleteCmd deleteCmd) {
 		DeleteCmd deleteComment = new DeleteCmd();
 
 		deleteComment.setAppraisal_num(deleteCmd.getAppraisal_num());
 
 		appraisalService.deleteComment(deleteComment);
-
-		return deleteCmd.getAppraisal_num();
 	}
 
 	/**
@@ -148,4 +143,27 @@ public class AppraisalController {
 		}
 	}
 
+	/**
+	 * 독서 상태 등록
+	 */
+	@ResponseBody
+	@PostMapping("/insertStatus")
+	public void passCheck(@RequestBody InsertCmd insertCmd) {
+		BookShelfVO bookShelf = new BookShelfVO();
+
+		System.out.println("option : " + insertCmd.getOption());
+		System.out.println("isbn : " + insertCmd.getIsbn());
+
+		// 테스트 하기 전마다 회원 등록 후 평가작성을 하지 않은 새로운 회원번호로 진행해야함
+		MemberVO member = new MemberVO();
+		Long mem_num = (long) 1; // 테스트용 회원 번호(현재 테이블에 6번회원까지 있음)
+		member.setMem_num(mem_num);
+
+		insertCmd.setIsbn(insertCmd.getIsbn().substring(0, 10));
+
+		bookShelf.setBook_status(insertCmd.getOption());
+		bookShelf.setMem_num(mem_num);
+		bookShelf.setIsbn(insertCmd.getIsbn());
+		bookShelf = appraisalService.insertBookShelf(bookShelf);
+	}
 }
