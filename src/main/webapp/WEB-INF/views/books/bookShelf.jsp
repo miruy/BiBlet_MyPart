@@ -8,6 +8,9 @@
 <head>
 <meta charset="UTF-8">
 <title>보관함</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"
+	integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+	crossorigin="anonymous"></script>
 </head>
 <body>
 	
@@ -18,10 +21,9 @@
 	</c:if>
 	</p>
 	
+	
 	<p>
-	<c:if test="${!empty likeIsbn}">
-	테스트 : ${likeIsbn}
-	</c:if>
+	<div id="like"></div>
 	</p>
 		
 	<p>
@@ -32,9 +34,7 @@
 	</p>
 	
 	<p>
-	<c:if test="${!empty leadingIsbn}">
-	테스트 : ${leadingIsbn}
-	</c:if>
+	<div id="leading"></div>
 	</p>
 	
 	<h2>독서 완료</h2>
@@ -54,11 +54,81 @@
 	</c:if>
 
 	<p>
-	<c:if test="${!empty completeIsbn}">
-	테스트 : ${completeIsbn}
-	</c:if>
+	<div id="complete"></div>
 	</p>
 
-	
+<script>
+
+//		'찜' 페이지 실행 되면 isbn for문으로 담기
+		$(document).ready(function(){
+			<c:forEach var="likeIsbn" items="${likeIsbn}">
+				likeIsbn("${likeIsbn}")
+			</c:forEach>
+		});
+		
+// 		'찜' 도서 불러오기(1개)
+		function likeIsbn(isbn){
+			$.ajax({	//카카오 검색요청 / [요청]
+		        method: "GET",
+		        traditional: true,
+		        url: "https://dapi.kakao.com/v3/search/book?target=isbn",
+		        data: { query: isbn},
+		        headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
+		    })
+		   
+		    .done(function (msg) {	//검색 결과 담기 / [응답]
+		    	console.log(msg);
+		            $("#like").append("<img src='" + msg.documents[0].thumbnail + "'/>");	//표지
+		    });   
+		}
+		
+		
+//		'보는 중' 페이지 실행 되면 isbn for문으로 담기
+		$(document).ready(function(){
+			<c:forEach var="leadingIsbn" items="${leadingIsbn}">
+				leadingIsbn("${leadingIsbn}")
+			</c:forEach>
+		});
+		
+// 		'보는 중' 도서 불러오기(1개)
+		function leadingIsbn(isbn){
+			$.ajax({	//카카오 검색요청 / [요청]
+		        method: "GET",
+		        traditional: true,
+		        url: "https://dapi.kakao.com/v3/search/book?target=isbn",
+		        data: { query: isbn},
+		        headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
+		    })
+		   
+		    .done(function (msg) {	//검색 결과 담기 / [응답]
+		    	console.log(msg);
+		            $("#leading").append("<img src='" + msg.documents[0].thumbnail + "'/>");	//표지
+		    });   
+		}		
+		
+		
+//		'독서 완료' 페이지 실행 되면 isbn for문으로 담기
+		$(document).ready(function(){
+			<c:forEach var="completeIsbn" items="${completeIsbn}">
+				completeIsbn("${completeIsbn}")
+			</c:forEach>
+		});
+		
+// 		'독서 완료' 도서 불러오기(1개)
+		function completeIsbn(isbn){
+			$.ajax({	//카카오 검색요청 / [요청]
+		        method: "GET",
+		        traditional: true,
+		        url: "https://dapi.kakao.com/v3/search/book?target=isbn",
+		        data: { query: isbn},
+		        headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
+		    })
+		   
+		    .done(function (msg) {	//검색 결과 담기 / [응답]
+		    	console.log(msg);
+		            $("#complete").append("<img src='" + msg.documents[0].thumbnail + "'/>");	//표지
+		    });   
+		}	
+</script>	
 </body>
 </html>
