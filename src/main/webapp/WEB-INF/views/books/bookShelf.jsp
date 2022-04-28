@@ -11,7 +11,26 @@
 </head>
 <body>
 	
-	총 몇개인지도 추가하기
+	<p>
+	<h2>찜</h2>
+	<c:if test="${!empty MyLikeCount}">
+	내 찜 수 : ${MyLikeCount}
+	</c:if>
+	</p>
+		
+	<p>
+	<h2>보는 중</h2>
+	<c:if test="${!empty MyLeadingCount}">
+	내 보는 중 수 : ${MyLeadingCount}
+	</c:if>
+	</p>
+	
+	
+	
+	<h2>독서 완료</h2>
+	<c:if test="${!empty MyCommentCount}">
+	내 평가 수 : ${MyCommentCount}
+	</c:if>
 	
 	<c:if test="${!empty MyComment}">
 		<p>
@@ -23,8 +42,7 @@
 			</c:forEach>
 		</p>	
 	</c:if>
-	
-	eh
+
 	
 </body>
 </html>

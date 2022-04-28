@@ -65,6 +65,25 @@ public class AppraisalServiceImpl implements AppraisalService {
 	public List<allCommentByBookVO> selectMemComment(Long mem_num){
 		return appraisalDAO.selectMemComment(mem_num);
 	}
+	
+	//한 회원이 작성한 모든 평가 개수 호출
+	@Override
+	public int memCommentCount(Long mem_num) {
+		return appraisalDAO.memCommentCount(mem_num);
+	}
+	
+	// 해당 도서의 대한 찜 개수 호출
+	@Override
+	public int memLikeCount(Long mem_num) {
+		return appraisalDAO.memLikeCount(mem_num);
+	}
+
+	//해당 도서의 대한 보는 중 개수 호출
+	@Override
+	public int memLeadingCount(Long mem_num) {
+		return appraisalDAO.memLeadingCount(mem_num);
+	}
+
 }
 
 
