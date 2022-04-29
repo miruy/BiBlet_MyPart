@@ -35,12 +35,7 @@ public class AppraisalController {
 	 * 도서 검색
 	 */
 	@GetMapping("/list")
-	public String findAllBook(@RequestParam(value = "query", required = false) String query, Model model) {
-
-		if (query != null) {
-			model.addAttribute("query", query);
-		}
-
+	public String findAllBook() {
 		return "selectBook";
 	}
 

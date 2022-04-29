@@ -125,6 +125,7 @@
 			<input type="hidden" name="appraisal_num" id="appraisal_num" value="${commentsByMember.appraisal_num}" />
 			<input type="hidden" name="mem_pass" id="mem_pass" value="${commentsByMember.mem_pass}" />
 			<input type="hidden" name="book_status_num" id="book_status_num" value="${commentsByMember.book_status_num}" />
+			<input type="hidden" name="book_comment" id="book_comment" value="${commentsByMember.book_comment}" />
 			
 			<div id="pd${commentsByMember.appraisal_num}"></div>
 			<div id="pu${commentsByMember.appraisal_num}"></div>
@@ -230,7 +231,7 @@
 			}		  
 	
 		
-//			비밀번호 확인 및 평가 수정
+//			비밀번호 확인 및 평가 수정 폼 보여주기
 			function passCheckAndUpdate(appraisal_num){
 				
 				let isbn = $("#isbn").val();
@@ -271,20 +272,14 @@
 				
 			}	
 	
-// 			평가 수정 폼 보여주기
+// 			평가 수정 폼 
 			function updateForm(appraisal_num) {
 				let book_status_num = $("#book_status_num").val();
+				let book_comment = $("#book_comment").val();
 				
 				 $("#u"+appraisal_num).html(
 				 
-				 '<p>독서 상태 : '+ 
-					 '<select id="optionU" name="option" onChange="bookStatus()">'+
-						'<option value="none">=== 선택 ===</option>'+
-						'<option value=0>찜</option>'+
-						'<option value=1>보는 중</option>'+
-						'<option value=2>독서 완료</option>'+
-					'</select>'+
-				 '</p>'+
+				 '<p>독서 상태 : 독서 완료 </p>'+
 				
 
 				'별점 :'+
@@ -303,7 +298,7 @@
 
 				'<p>'+
 					'평가 :'+
-					'<textarea id="book_commentU" name="book_comment"></textarea>'+
+					'<textarea id="book_commentU" name="book_comment">'+$("#book_comment").val()+'</textarea>'+
 				'</p>'+
 
 

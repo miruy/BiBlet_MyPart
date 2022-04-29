@@ -42,15 +42,18 @@
 	내 평가 수 : ${MyCommentCount}
 	</c:if>
 	
+	
+	
 	<c:if test="${!empty MyComment}">
-		<p>
 			<c:forEach var="myComment" items="${MyComment}">
+				<p>
 				별점 : ${myComment.star}
 				평가 : ${myComment.book_comment}
 				시작 날짜 : ${myComment.start_date}
 				다 읽은 날짜 : ${myComment.end_date}
+				<div id="img${myComment.appraisal_num}"></div>
+				</p>	
 			</c:forEach>
-		</p>	
 	</c:if>
 
 	<p>
@@ -107,15 +110,22 @@
 		}		
 		
 		
+		
+		
+		
+		
+		
+		//컨트롤러에서 isbn, appraisal_num을 같이 가지고 있는  커맨드 객체만들어서 여기로 보내서 둘이 같이 사용하기!!! 
 //		'독서 완료' 페이지 실행 되면 isbn for문으로 담기
 		$(document).ready(function(){
 			<c:forEach var="completeIsbn" items="${completeIsbn}">
-				completeIsbn("${completeIsbn}")
+				completeIsbn("${completeIsbn}", "${myComment.appraisal_num}")
 			</c:forEach>
 		});
 		
 // 		'독서 완료' 도서 불러오기(1개)
-		function completeIsbn(isbn){
+		function completeIsbn(isbn, app_num){
+	console.log(isbn + " : " + app_num);
 			$.ajax({	//카카오 검색요청 / [요청]
 		        method: "GET",
 		        traditional: true,
@@ -126,7 +136,8 @@
 		   
 		    .done(function (msg) {	//검색 결과 담기 / [응답]
 		    	console.log(msg);
-		            $("#complete").append("<img src='" + msg.documents[0].thumbnail + "'/>");	//표지
+// 		    		document.querySelector("#img${myComment.appraisal_num}").innerHTML="<p><img src='" + msg.documents[0].thumbnail + "'/></p>";
+		            $("#img"+app_num).append("<p><img src='" + msg.documents[0].thumbnail + "'/></p>");	//표지
 		    });   
 		}	
 </script>	

@@ -29,41 +29,21 @@
     
  	
  	<script>
+ 	
  	  <!-- 도서 검색 -->
         $(document).ready(function () {
             var pageNum = 1;
+            
             $("#search").click(function () {	//검색 버튼 클릭시 ajax실행
+            	
             	$.ajax({	//카카오 검색요청 / [요청]
                     method: "GET",
                     url: "https://dapi.kakao.com/v3/search/book",
                     data: { query: $("#query").val(), page: pageNum},
                     headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
                 })
-                
-                .done(function (msg) {	//검색 결과 담기 / [응답]
-                /* 	console.log(msg); */
-                    for (var i = 0; i < 10; i++){
-                        $("div").append("<img src='" + msg.documents[i].thumbnail + "'/><br>");		//표지
-                        $("div").append("<h2><a href='./read/"+ msg.documents[i].isbn.slice(0, 10)+"?query="+$("#query").val()+ "'>" + msg.documents[i].title + "</a></h2>");	//제목
-                        $("div").append("<strong>저자:</strong> " + msg.documents[i].authors + "<br>");		//저자	
-                        $("div").append("<strong>출판사:</strong> " + msg.documents[i].publisher + "<br>");		//출판사
-                        $("div").append("<strong>줄거리:</strong> " + msg.documents[i].contents + "...<br>");		//줄거리
-                    	$("div").append("<strong>일련번호:</strong>" + msg.documents[i].isbn + "<br>");	//일련번호
-                    }
-                });
-            });
-            var query = "${query}";
-            if (query.length > 0) {
-            	$.ajax({	//카카오 검색요청 / [요청]
-                    method: "GET",
-                    url: "https://dapi.kakao.com/v3/search/book",
-                    data: { query: query, page: pageNum},
-                    headers: {Authorization: "KakaoAK 6f9ab74953bbcacc4423564a74af264e"} 
-                })
                
-                .done(function (msg) {
-                	//검색 결과 담기 / [응답]
-                	console.log("hi");
+                .done(function (msg) {	//검색 결과 담기 / [응답]
                 	console.log(msg);
                 	for (var i = 0; i < 10; i++){
                         $("div").append("<img src='" + msg.documents[i].thumbnail + "'/><br>");		//표지
@@ -74,10 +54,10 @@
                     	$("div").append("<strong>일련번호:</strong>" + msg.documents[i].isbn + "<br>");	//일련번호
                     }
                 });
-            }
+            
         	   
         	
-        	$("#query").off(); 
+        	
             
 //             무한스크롤
             $(window).scroll(function(){  
@@ -93,7 +73,7 @@
                         console.log(msg);
                         for (var i = 0; i < 10; i++){
                             $("div").append("<img src='" + msg.documents[i].thumbnail + "'/><br>");
-                            $("div").append("<h2>" + msg.documents[i].title + "</h2>");
+                            $("div").append("<h2><a href='./read/"+ msg.documents[i].isbn.slice(0, 10)+"?query="+$("#query").val()+ "'>" + msg.documents[i].title + "</a></h2>");	//제목
                             $("div").append("<strong>저자:</strong> " + msg.documents[i].authors + "<br>");
                             $("div").append("<strong>출판사:</strong> " + msg.documents[i].publisher + "<br>");
                             $("div").append("<strong>줄거리:</strong> " + msg.documents[i].contents + "...<br>");
@@ -102,6 +82,8 @@
                     });
                 }   
             });
+            
+          })
 
         });    
  	 </script>
